@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+
 
 class User(models.Model):
     telegram_id = models.BigIntegerField(unique=True)
@@ -9,3 +11,11 @@ class User(models.Model):
 
     def __str__(self):
         return f"{self.username or self.first_name} ({self.telegram_id})"
+
+class UserRequestHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requests")
+    request_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} — {self.request_text[:30]}"

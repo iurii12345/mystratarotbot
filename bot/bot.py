@@ -10,7 +10,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")
-API_URL = os.getenv("API_URL")
+API_URL_REGISTER = os.getenv("API_URL_REGISTER")  # http://<server_ip>:8000/api/users/register/
+API_URL_REQUEST = os.getenv("API_URL_REQUEST")    # http://<server_ip>:8000/api/users/requests/
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -18,8 +19,8 @@ dp = Dispatcher()
 async def check_api():
     """Проверяем доступность API перед регистрацией"""
     try:
-        r = requests.options(API_URL)
-        print(f"🌐 Проверка API {API_URL}: статус {r.status_code}")
+        r = requests.options(API_URL_REGISTER)
+        print(f"🌐 Проверка API {API_URL_REGISTER}: статус {r.status_code}")
     except Exception as e:
         print(f"❌ API недоступно: {e}")
 
@@ -38,7 +39,7 @@ async def start(message: Message):
     print(f"📦 Данные для регистрации: {data}")
 
     try:
-        r = requests.post(API_URL, json=data, timeout=5)
+        r = requests.post(API_URL_REGISTER, json=data, timeout=5)
         print(f"📡 Статус: {r.status_code}, Ответ: {r.text}")
         if r.status_code == 201:
             await message.answer("✅ Ты успешно зарегистрирован!")
@@ -50,12 +51,23 @@ async def start(message: Message):
         await message.answer(f"❌ Ошибка соединения с сервером: {e}")
 
 @dp.message()
-async def echo_message(message: Message):
-    await message.answer("Я получил твоё сообщение!")
+async def handle_message(message: Message):
+    # Сохраняем запрос пользователя на сервере
+    request_data = {
+        "telegram_id": message.from_user.id,
+        "request_text": message.text
+    }
+    try:
+        r = requests.post(API_URL_REQUEST, json=request_data)
+        if r.status_code == 201:
+            await message.answer("✅ Ваш запрос сохранён!")
+        else:
+            await message.answer("⚠️ Не удалось сохранить запрос.")
+    except Exception as e:
+        await message.answer(f"Ошибка соединения с сервером: {e}")
 
 async def main():
     print("🚀 Бот запущен!")
-    print(f"🔍 API_URL = {API_URL}")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
