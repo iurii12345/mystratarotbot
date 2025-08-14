@@ -12,10 +12,15 @@ class User(models.Model):
     def __str__(self):
         return f"{self.username or self.first_name} ({self.telegram_id})"
 
+# Модель для хранения истории запросов пользователя
 class UserRequestHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="requests")
     request_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "User request history"
+        verbose_name_plural = "User request histories"
 
     def __str__(self):
         return f"{self.user} — {self.request_text[:30]}"
