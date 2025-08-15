@@ -3,6 +3,7 @@ import random
 import httpx
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message
+from aiogram.filters import Command
 import os
 
 
@@ -17,11 +18,11 @@ API_URL = "http://103.71.20.245/api/cards/"
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-@dp.message(commands=["start"])
+@dp.message(Command("start"))
 async def start_command(message: Message):
     await message.answer("Привет! Напиши /random_card, чтобы получить случайную карту Таро.")
 
-@dp.message(commands=["random_card"])
+@dp.message(Command("random_card"))
 async def send_random_card(message: Message):
     try:
         async with httpx.AsyncClient() as client:
