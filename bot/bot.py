@@ -17,7 +17,11 @@ API_URL = "http://103.71.20.245/api/cards/"
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-@dp.message()
+@dp.message(commands=["start"])
+async def start_command(message: Message):
+    await message.answer("Привет! Напиши /random_card, чтобы получить случайную карту Таро.")
+
+@dp.message(commands=["random_card"])
 async def send_random_card(message: Message):
     try:
         async with httpx.AsyncClient() as client:
@@ -38,10 +42,8 @@ async def send_random_card(message: Message):
             f"Обратное значение: {card.get('rdesc', 'нет')}"
         )
 
-        # Отправляем текст
         await message.answer(text, parse_mode="Markdown")
 
-        # Отправляем изображение, если есть
         if card.get("image"):
             await message.answer_photo(card["image"])
 
