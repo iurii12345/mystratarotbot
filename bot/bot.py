@@ -40,7 +40,8 @@ async def send_random_card(message: Message):
             f"**{card['name']}**\n\n"
             f"Описание: {card.get('desc', 'нет')}\n"
             f"Сообщение: {card.get('message', 'нет')}\n"
-            f"Обратное значение: {card.get('rdesc', 'нет')}"
+            f"Обратное значение: {card.get('rdesc', 'нет')}\n"
+            f"{card.get('image', 'нет')}"
         )
 
         await message.answer(text, parse_mode="Markdown")
