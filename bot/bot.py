@@ -44,7 +44,7 @@ async def send_random_card(message: Message):
             f"Изображение: {card.get('image', 'нет')}"
         )
 
-        await message.answer(text, parse_mode="Markdown")
+        await message.answer(text)
 
         # if card.get("image"):
         #     await message.answer_photo(card["image"])
