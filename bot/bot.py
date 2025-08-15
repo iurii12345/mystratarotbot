@@ -6,10 +6,10 @@ from aiogram import Bot, Dispatcher, types
 import os
 
 TOKEN = os.getenv("BOT_TOKEN")
-# API_TOKEN = "6274358990:AAF3FPACng8-3Btm4sINkRGTpaAva8QPhpY"
+# TOKEN = "6274358990:AAF3FPACng8-3Btm4sINkRGTpaAva8QPhpY"
 API_URL = "http://103.71.20.245/api/cards/"
 
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 @dp.message()
