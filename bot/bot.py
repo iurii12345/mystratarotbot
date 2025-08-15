@@ -18,7 +18,7 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 @dp.message()
-async def send_random_card_name(message: Message):
+async def send_random_card(message: Message):
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(API_URL, timeout=10)
@@ -30,7 +30,20 @@ async def send_random_card_name(message: Message):
             return
 
         card = random.choice(cards)
-        await message.answer(f"Случайная карта: {card['name']}")
+
+        text = (
+            f"**{card['name']}**\n\n"
+            f"Описание: {card.get('desc', 'нет')}\n"
+            f"Сообщение: {card.get('message', 'нет')}\n"
+            f"Обратное значение: {card.get('rdesc', 'нет')}"
+        )
+
+        # Отправляем текст
+        await message.answer(text, parse_mode="Markdown")
+
+        # Отправляем изображение, если есть
+        if card.get("image"):
+            await message.answer_photo(card["image"])
 
     except Exception as e:
         await message.answer(f"Произошла ошибка при получении карты: {e}")
