@@ -41,13 +41,13 @@ async def send_random_card(message: Message):
             f"Описание: {card.get('desc', 'нет')}\n"
             f"Сообщение: {card.get('message', 'нет')}\n"
             f"Обратное значение: {card.get('rdesc', 'нет')}\n"
-            f"{card.get('image', 'нет')}"
+            f"Изображение: {card.get('image', 'нет')}"
         )
 
         await message.answer(text, parse_mode="Markdown")
 
-        if card.get("image"):
-            await message.answer_photo(card["image"])
+        # if card.get("image"):
+        #     await message.answer_photo(card["image"])
 
     except Exception as e:
         await message.answer(f"Произошла ошибка при получении карты: {e}")
