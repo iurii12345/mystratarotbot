@@ -2,7 +2,7 @@
   {
     "name": "Шут",
     "url": "the_fool",
-    "image": "/cards/major_arcana_fool.png",
+    "image": "/media/cards/major_arcana_fool.png",
     "desc": "Начало нового пути, спонтанность, открытость миру, доверие и наивность.",
     "message": "начать новое путешествие",
     "rdesc": "Безрассудство, легкомыслие, неготовность к ответственности.",
@@ -14,7 +14,7 @@
   {
     "name": "Маг",
     "url": "the_magician",
-    "image": "/cards/major_arcana_magician.png",
+    "image": "/media/cards/major_arcana_magician.png",
     "desc": "Начало действий, использование имеющихся ресурсов, мастерство и сосредоточенность.",
     "message": "создать новую реальность",
     "rdesc": "Манипуляции, обман, неиспользованные возможности.",
@@ -26,7 +26,7 @@
   {
     "name": "Жрица",
     "url": "the_high_priestess",
-    "image": "/cards/major_arcana_priestess.png",
+    "image": "/media/cards/major_arcana_priestess.png",
     "desc": "Интуиция, внутреннее знание, тайны, духовное развитие.",
     "message": "слушать внутренний голос",
     "rdesc": "Секретность, недосказанность, непонимание.",
@@ -38,7 +38,7 @@
   {
     "name": "Императрица",
     "url": "the_empress",
-    "image": "/cards/major_arcana_empress.png",
+    "image": "/media/cards/major_arcana_empress.png",
     "desc": "Плодородие, забота, материальное благополучие, творчество.",
     "message": "созидание и забота",
     "rdesc": "Излишняя опека, зависимость, застой.",
@@ -50,7 +50,7 @@
   {
     "name": "Император",
     "url": "the_emperor",
-    "image": "/cards/major_arcana_emperor.png",
+    "image": "/media/cards/major_arcana_emperor.png",
     "desc": "Власть, структура, стабильность, ответственность.",
     "message": "установить порядок",
     "rdesc": "Тирания, жесткость, чрезмерная контроль.",
@@ -62,7 +62,7 @@
   {
     "name": "Иерофант",
     "url": "the_hierophant",
-    "image": "/cards/major_arcana_hierophant.png",
+    "image": "/media/cards/major_arcana_hierophant.png",
     "desc": "Традиции, наставничество, духовное обучение, социальные нормы.",
     "message": "следовать мудрости",
     "rdesc": "Консерватизм, слепое следование правилам, догматизм.",
@@ -74,7 +74,7 @@
   {
     "name": "Влюбленные",
     "url": "the_lovers",
-    "image": "/cards/major_arcana_lovers.png",
+    "image": "/media/cards/major_arcana_lovers.png",
     "desc": "Выбор, любовь, союз, гармония отношений.",
     "message": "сделать важный выбор",
     "rdesc": "Разногласия, сомнения, неверный выбор.",
@@ -86,7 +86,7 @@
   {
     "name": "Колесница",
     "url": "the_chariot",
-    "image": "/cards/major_arcana_chariot.png",
+    "image": "/media/cards/major_arcana_chariot.png",
     "desc": "Воля, контроль, движение вперед, победа над трудностями.",
     "message": "достичь цели",
     "rdesc": "Потеря контроля, нерешительность, столкновение с препятствиями.",
@@ -98,7 +98,7 @@
   {
     "name": "Сила",
     "url": "strength",
-    "image": "/cards/major_arcana_strength.png",
+    "image": "/media/cards/major_arcana_strength.png",
     "desc": "Внутренняя сила, мужество, терпение, самоконтроль.",
     "message": "обуздать страсти",
     "rdesc": "Слабость, неуверенность, импульсивность.",
@@ -110,7 +110,7 @@
   {
     "name": "Отшельник",
     "url": "the_hermit",
-    "image": "/cards/major_arcana_hermit.png",
+    "image": "/media/cards/major_arcana_hermit.png",
     "desc": "Размышление, поиск истины, уединение, мудрость.",
     "message": "найти внутренний свет",
     "rdesc": "Одиночество, изоляция, уход от мира.",
@@ -122,7 +122,7 @@
   {
     "name": "Колесо Фортуны",
     "url": "the_wheel_of_fortune",
-    "image": "/cards/major_arcana_fortune.png",
+    "image": "/media/cards/major_arcana_fortune.png",
     "desc": "Судьба, перемены, циклы, удача и случайности.",
     "message": "принять перемены",
     "rdesc": "Неудачи, застой, сопротивление переменам.",
@@ -134,7 +134,7 @@
   {
     "name": "Справедливость",
     "url": "justice",
-    "image": "/cards/major_arcana_justice.png",
+    "image": "/media/cards/major_arcana_justice.png",
     "desc": "Равновесие, объективность, ответственность за действия.",
     "message": "действовать справедливо",
     "rdesc": "Несправедливость, обман, предвзятость.",
@@ -146,7 +146,7 @@
   {
     "name": "Повешенный",
     "url": "the_hanged_man",
-    "image": "/cards/major_arcana_hanged.png",
+    "image": "/media/cards/major_arcana_hanged.png",
     "desc": "Отказ, пауза, новый взгляд на ситуацию, жертва.",
     "message": "переосмыслить ситуацию",
     "rdesc": "Сопротивление переменам, застой, жертвы напрасны.",
@@ -158,7 +158,7 @@
   {
     "name": "Смерть",
     "url": "death",
-    "image": "/cards/major_arcana_death.png",
+    "image": "/media/cards/major_arcana_death.png",
     "desc": "Конец цикла, трансформация, освобождение, новые начала.",
     "message": "отпустить старое",
     "rdesc": "Сопротивление изменениям, застой, страх перемен.",
@@ -170,7 +170,7 @@
   {
     "name": "Умеренность",
     "url": "temperance",
-    "image": "/cards/major_arcana_temperance.png",
+    "image": "/media/cards/major_arcana_temperance.png",
     "desc": "Баланс, гармония, умеренность, интеграция противоположностей.",
     "message": "найти золотую середину",
     "rdesc": "Несоразмерность, дисгармония, крайности.",
@@ -182,7 +182,7 @@
   {
     "name": "Дьявол",
     "url": "the_devil",
-    "image": "/cards/major_arcana_devil.png",
+    "image": "/media/cards/major_arcana_devil.png",
     "desc": "Привязанности, искушения, материальные ограничения, зависимость.",
     "message": "освободиться от иллюзий",
     "rdesc": "Зависимость, соблазн, негативные привычки.",
@@ -194,7 +194,7 @@
   {
     "name": "Башня",
     "url": "the_tower",
-    "image": "/cards/major_arcana_tower.png",
+    "image": "/media/cards/major_arcana_tower.png",
     "desc": "Внезапные изменения, потрясения, разрушение иллюзий.",
     "message": "снести старое",
     "rdesc": "Разрушение без подготовки, хаос, шок.",
@@ -206,7 +206,7 @@
   {
     "name": "Звезда",
     "url": "the_star",
-    "image": "/cards/major_arcana_star.png",
+    "image": "/media/cards/major_arcana_star.png",
     "desc": "Надежда, вдохновение, исцеление, духовное направление.",
     "message": "поверить в лучшее",
     "rdesc": "Разочарование, потеря надежды, иллюзии.",
@@ -218,7 +218,7 @@
   {
     "name": "Луна",
     "url": "the_moon",
-    "image": "/cards/major_arcana_moon.png",
+    "image": "/media/cards/major_arcana_moon.png",
     "desc": "Интуиция, тайны, иллюзии, эмоциональные глубины.",
     "message": "исследовать подсознание",
     "rdesc": "Обман, страхи, путаница, иллюзии.",
@@ -230,7 +230,7 @@
   {
     "name": "Солнце",
     "url": "the_sun",
-    "image": "/cards/major_arcana_sun.png",
+    "image": "/media/cards/major_arcana_sun.png",
     "desc": "Радость, успех, ясность, жизненная энергия.",
     "message": "наслаждаться жизнью",
     "rdesc": "Задержка, неудачи, потери.",
@@ -242,7 +242,7 @@
   {
     "name": "Суд",
     "url": "judgement",
-    "image": "/cards/major_arcana_judgement.png",
+    "image": "/media/cards/major_arcana_judgement.png",
     "desc": "Возрождение, оценка прошлого, пробуждение, кармические уроки.",
     "message": "освободиться и возродиться",
     "rdesc": "Отрицание прошлого, чувство вины, застой.",
@@ -254,7 +254,7 @@
   {
     "name": "Мир",
     "url": "the_world",
-    "image": "/cards/major_arcana_world.png",
+    "image": "/media/cards/major_arcana_world.png",
     "desc": "Завершение цикла, гармония, успех, целостность.",
     "message": "достичь гармонии",
     "rdesc": "Завершение с препятствиями, задержки, ощущение неполноты.",
@@ -266,7 +266,7 @@
   {
     "name": "Туз Жезлов",
     "url": "ace_of_wands",
-    "image": "/cards/minor_arcana_wands_ace.png",
+    "image": "/media/cards/minor_arcana_wands_ace.png",
     "desc": "Начало новых проектов, вдохновение, энергия, потенциал.",
     "message": "начать что-то новое",
     "rdesc": "Задержки, отсутствие мотивации, препятствия.",
@@ -277,7 +277,7 @@
   {
     "name": "1 Жезлов",
     "url": "two_of_wands",
-    "image": "/cards/minor_arcana_wands_2.png",
+    "image": "/media/cards/minor_arcana_wands_2.png",
     "desc": "Планирование, выбор направления, подготовка к действию.",
     "message": "определиться с путем",
     "rdesc": "Неуверенность, сомнения, отсутствие стратегии.",
@@ -288,7 +288,7 @@
   {
     "name": "3 Жезлов",
     "url": "three_of_wands",
-    "image": "/cards/minor_arcana_wands_3.png",
+    "image": "/media/cards/minor_arcana_wands_3.png",
     "desc": "Расширение горизонтов, ожидание результатов, сотрудничество.",
     "message": "ждать плоды усилий",
     "rdesc": "Отсутствие прогресса, задержки, разочарование.",
@@ -299,7 +299,7 @@
   {
     "name": "4 Жезлов",
     "url": "four_of_wands",
-    "image": "/cards/minor_arcana_wands_4.png",
+    "image": "/media/cards/minor_arcana_wands_4.png",
     "desc": "Празднование, стабильность, достижения, радостные события.",
     "message": "наслаждаться успехом",
     "rdesc": "Неустойчивость, конфликты, сорванные планы.",
@@ -310,7 +310,7 @@
   {
     "name": "5 Жезлов",
     "url": "five_of_wands",
-    "image": "/cards/minor_arcana_wands_5.png",
+    "image": "/media/cards/minor_arcana_wands_5.png",
     "desc": "Конфликты, соперничество, конкуренция, борьба за цели.",
     "message": "преодолеть противников",
     "rdesc": "Беспорядок, пустые споры, потеря энергии.",
@@ -321,7 +321,7 @@
   {
     "name": "6 Жезлов",
     "url": "six_of_wands",
-    "image": "/cards/minor_arcana_wands_6.png",
+    "image": "/media/cards/minor_arcana_wands_6.png",
     "desc": "Победа, признание, успех, уважение окружающих.",
     "message": "наслаждаться победой",
     "rdesc": "Задержка признания, сомнение, неудача.",
@@ -332,7 +332,7 @@
   {
     "name": "7 Жезлов",
     "url": "seven_of_wands",
-    "image": "/cards/minor_arcana_wands_7.png",
+    "image": "/media/cards/minor_arcana_wands_7.png",
     "desc": "Защита позиции, отстаивание своих прав, настойчивость.",
     "message": "стоять на своем",
     "rdesc": "Слабость, сдача, потеря уверенности.",
@@ -343,7 +343,7 @@
   {
     "name": "8 Жезлов",
     "url": "eight_of_wands",
-    "image": "/cards/minor_arcana_wands_8.png",
+    "image": "/media/cards/minor_arcana_wands_8.png",
     "desc": "Быстрое движение, новости, прогресс, динамика событий.",
     "message": "действовать быстро",
     "rdesc": "Задержки, торможение, потеря возможности.",
@@ -354,7 +354,7 @@
   {
     "name": "9 Жезлов",
     "url": "nine_of_wands",
-    "image": "/cards/minor_arcana_wands_9.png",
+    "image": "/media/cards/minor_arcana_wands_9.png",
     "desc": "Выносливость, готовность к трудностям, защита своих достижений.",
     "message": "не сдаваться",
     "rdesc": "Истощение, усталость, упадок сил.",
@@ -365,7 +365,7 @@
   {
     "name": "10 Жезлов",
     "url": "ten_of_wands",
-    "image": "/cards/minor_arcana_wands_10.png",
+    "image": "/media/cards/minor_arcana_wands_10.png",
     "desc": "Тяжесть обязанностей, перегрузка, ответственность.",
     "message": "нести груз",
     "rdesc": "Перегрузка, стресс, неспособность справиться.",
@@ -376,7 +376,7 @@
   {
     "name": "Паж Жезлов",
     "url": "page_of_wands",
-    "image": "/cards/minor_arcana_wands_page.png",
+    "image": "/media/cards/minor_arcana_wands_page.png",
     "desc": "Любознательность, новаторство, начало пути, сообщения.",
     "message": "следовать за вдохновением",
     "rdesc": "Поверхностность, неосмотрительность, легкомыслие.",
@@ -387,7 +387,7 @@
   {
     "name": "Рыцарь Жезлов",
     "url": "knight_of_wands",
-    "image": "/cards/minor_arcana_wands_knight.png",
+    "image": "/media/cards/minor_arcana_wands_knight.png",
     "desc": "Действие, энергия, движение вперед, страсть.",
     "message": "воплощать идеи",
     "rdesc": "Импульсивность, поспешность, безрассудство.",
@@ -398,7 +398,7 @@
   {
     "name": "Королева Жезлов",
     "url": "queen_of_wands",
-    "image": "/cards/minor_arcana_wands_queen.png",
+    "image": "/media/cards/minor_arcana_wands_queen.png",
     "desc": "Харизма, уверенность, страсть, вдохновение.",
     "message": "проявлять лидерство",
     "rdesc": "Эгоизм, нетерпимость, контролирующее поведение.",
@@ -409,7 +409,7 @@
   {
     "name": "Король Жезлов",
     "url": "king_of_wands",
-    "image": "/cards/minor_arcana_wands_king.png",
+    "image": "/media/cards/minor_arcana_wands_king.png",
     "desc": "Лидерство, дальновидность, сила воли, влияние.",
     "message": "вести за собой",
     "rdesc": "Тирания, жесткость, авторитарность.",
@@ -420,7 +420,7 @@
   {
     "name": "Туз Кубков",
     "url": "ace_of_cups",
-    "image": "/cards/minor_arcana_cups_ace.png",
+    "image": "/media/cards/minor_arcana_cups_ace.png",
     "desc": "Начало новых эмоций, любви, духовного роста, счастья.",
     "message": "открой сердце",
     "rdesc": "Эмоциональная блокировка, пустота, разочарование.",
@@ -431,7 +431,7 @@
   {
     "name": "1 Кубков",
     "url": "two_of_cups",
-    "image": "/cards/minor_arcana_cups_2.png",
+    "image": "/media/cards/minor_arcana_cups_2.png",
     "desc": "Партнерство, гармония, союз, взаимопонимание.",
     "message": "строить отношения",
     "rdesc": "Разлад, конфликт, недопонимание.",
@@ -442,7 +442,7 @@
   {
     "name": "3 Кубков",
     "url": "three_of_cups",
-    "image": "/cards/minor_arcana_cups_3.png",
+    "image": "/media/cards/minor_arcana_cups_3.png",
     "desc": "Празднование, дружба, радость, совместные успехи.",
     "message": "наслаждаться обществом",
     "rdesc": "Излишества, сплетни, разногласия.",
@@ -453,7 +453,7 @@
   {
     "name": "4 Кубков",
     "url": "four_of_cups",
-    "image": "/cards/minor_arcana_cups_4.png",
+    "image": "/media/cards/minor_arcana_cups_4.png",
     "desc": "Размышления, медитация, скука, поиск нового смысла.",
     "message": "обдумывать возможности",
     "rdesc": "Аппатия, безразличие, потеря интереса.",
@@ -464,7 +464,7 @@
   {
     "name": "5 Кубков",
     "url": "five_of_cups",
-    "image": "/cards/minor_arcana_cups_5.png",
+    "image": "/media/cards/minor_arcana_cups_5.png",
     "desc": "Печаль, сожаление, утрата, фокус на потерях.",
     "message": "смириться с утратой",
     "rdesc": "Неосознанная горечь, неспособность двигаться дальше.",
@@ -475,7 +475,7 @@
   {
     "name": "6 Кубков",
     "url": "six_of_cups",
-    "image": "/cards/minor_arcana_cups_6.png",
+    "image": "/media/cards/minor_arcana_cups_6.png",
     "desc": "Ностальгия, воспоминания, детство, прошлое счастье.",
     "message": "вспомнить приятное",
     "rdesc": "Зацикленность на прошлом, неумение отпустить.",
@@ -486,7 +486,7 @@
   {
     "name": "7 Кубков",
     "url": "seven_of_cups",
-    "image": "/cards/minor_arcana_cups_7.png",
+    "image": "/media/cards/minor_arcana_cups_7.png",
     "desc": "Выбор, мечты, фантазии, иллюзии.",
     "message": "сделать правильный выбор",
     "rdesc": "Обман, иллюзии, непрактичные мечты.",
@@ -497,7 +497,7 @@
   {
     "name": "8 Кубков",
     "url": "eight_of_cups",
-    "image": "/cards/minor_arcana_cups_8.png",
+    "image": "/media/cards/minor_arcana_cups_8.png",
     "desc": "Отказ, уход, поиск нового пути, духовный рост.",
     "message": "отпустить старое",
     "rdesc": "Бегство, избегание проблем, страх изменений.",
@@ -508,7 +508,7 @@
   {
     "name": "9 Кубков",
     "url": "nine_of_cups",
-    "image": "/cards/minor_arcana_cups_9.png",
+    "image": "/media/cards/minor_arcana_cups_9.png",
     "desc": "Удовольствие, исполнение желаний, эмоциональное удовлетворение.",
     "message": "наслаждаться успехом",
     "rdesc": "Поверхностное счастье, чрезмерная самоуверенность.",
@@ -519,7 +519,7 @@
   {
     "name": "10 Кубков",
     "url": "ten_of_cups",
-    "image": "/cards/minor_arcana_cups_10.png",
+    "image": "/media/cards/minor_arcana_cups_10.png",
     "desc": "Семейное счастье, гармония, стабильные отношения.",
     "message": "ценить близких",
     "rdesc": "Разногласия в семье, нестабильность.",
@@ -530,7 +530,7 @@
   {
     "name": "Паж Кубков",
     "url": "page_of_cups",
-    "image": "/cards/minor_arcana_cups_page.png",
+    "image": "/media/cards/minor_arcana_cups_page.png",
     "desc": "Творчество, интуиция, сообщения, начало эмоционального пути.",
     "message": "следовать интуиции",
     "rdesc": "Неопытность, наивность, эмоциональная нестабильность.",
@@ -541,7 +541,7 @@
   {
     "name": "Рыцарь Кубков",
     "url": "knight_of_cups",
-    "image": "/cards/minor_arcana_cups_knight.png",
+    "image": "/media/cards/minor_arcana_cups_knight.png",
     "desc": "Романтика, движение к цели, приглашение, послание.",
     "message": "следовать за мечтой",
     "rdesc": "Лживость, легкомыслие, иллюзии.",
@@ -552,7 +552,7 @@
   {
     "name": "Королева Кубков",
     "url": "queen_of_cups",
-    "image": "/cards/minor_arcana_cups_queen.png",
+    "image": "/media/cards/minor_arcana_cups_queen.png",
     "desc": "Эмпатия, забота, интуиция, эмоциональная зрелость.",
     "message": "проявлять заботу",
     "rdesc": "Эмоциональная зависимость, чрезмерная чувствительность.",
@@ -563,7 +563,7 @@
   {
     "name": "Король Кубков",
     "url": "king_of_cups",
-    "image": "/cards/minor_arcana_cups_king.png",
+    "image": "/media/cards/minor_arcana_cups_king.png",
     "desc": "Эмоциональная стабильность, мудрость, поддержка, дипломатия.",
     "message": "управлять эмоциями",
     "rdesc": "Манипуляции, скрытность, эмоциональная холодность.",
@@ -574,7 +574,7 @@
   {
     "name": "Туз Мечей",
     "url": "ace_of_swords",
-    "image": "/cards/minor_arcana_swords_ace.png",
+    "image": "/media/cards/minor_arcana_swords_ace.png",
     "desc": "Ясность мысли, новые идеи, решение проблем, правосудие.",
     "message": "открой разум",
     "rdesc": "Неясность, путаница, ложь, ошибка.",
@@ -585,7 +585,7 @@
   {
     "name": "1 Мечей",
     "url": "two_of_swords",
-    "image": "/cards/minor_arcana_swords_2.png",
+    "image": "/media/cards/minor_arcana_swords_2.png",
     "desc": "Выбор, необходимость решения, компромисс, баланс.",
     "message": "найти решение",
     "rdesc": "Сомнения, избегание, нерешительность.",
@@ -596,7 +596,7 @@
   {
     "name": "3 Мечей",
     "url": "three_of_swords",
-    "image": "/cards/minor_arcana_swords_3.png",
+    "image": "/media/cards/minor_arcana_swords_3.png",
     "desc": "Боль, разочарование, потеря, разбитое сердце.",
     "message": "принять горечь",
     "rdesc": "Отрицание боли, слёзы без исцеления.",
@@ -607,7 +607,7 @@
   {
     "name": "4 Мечей",
     "url": "four_of_swords",
-    "image": "/cards/minor_arcana_swords_4.png",
+    "image": "/media/cards/minor_arcana_swords_4.png",
     "desc": "Отдых, восстановление, размышления, пауза.",
     "message": "отдохнуть и восстановиться",
     "rdesc": "Застой, бездействие, утомление.",
@@ -618,7 +618,7 @@
   {
     "name": "5 Мечей",
     "url": "five_of_swords",
-    "image": "/cards/minor_arcana_swords_5.png",
+    "image": "/media/cards/minor_arcana_swords_5.png",
     "desc": "Конфликт, поражение, борьба за власть, уроки смирения.",
     "message": "разобраться с конфликтом",
     "rdesc": "Жестокость, обман, проигрыш из-за эго.",
@@ -629,7 +629,7 @@
   {
     "name": "6 Мечей",
     "url": "six_of_swords",
-    "image": "/cards/minor_arcana_swords_6.png",
+    "image": "/media/cards/minor_arcana_swords_6.png",
     "desc": "Переход, движение к лучшему, путешествие, решение проблем.",
     "message": "плыть к новым берегам",
     "rdesc": "Застревание, страх изменений, медленный прогресс.",
@@ -640,7 +640,7 @@
   {
     "name": "7 Мечей",
     "url": "seven_of_swords",
-    "image": "/cards/minor_arcana_swords_7.png",
+    "image": "/media/cards/minor_arcana_swords_7.png",
     "desc": "Хитрость, стратегия, тайные действия, умение скрываться.",
     "message": "действовать скрытно",
     "rdesc": "Обман, предательство, потери из-за нечестности.",
@@ -651,7 +651,7 @@
   {
     "name": "8 Мечей",
     "url": "eight_of_swords",
-    "image": "/cards/minor_arcana_swords_8.png",
+    "image": "/media/cards/minor_arcana_swords_8.png",
     "desc": "Ограничения, страхи, ловушки, чувство беспомощности.",
     "message": "найти выход из ограничений",
     "rdesc": "Паралич действий, самозапреты, блокировка мышления.",
@@ -662,7 +662,7 @@
   {
     "name": "9 Мечей",
     "url": "nine_of_swords",
-    "image": "/cards/minor_arcana_swords_9.png",
+    "image": "/media/cards/minor_arcana_swords_9.png",
     "desc": "Тревога, ночные страхи, мучительные мысли, стресс.",
     "message": "освободиться от страхов",
     "rdesc": "Паника, депрессия, чрезмерные переживания.",
@@ -673,7 +673,7 @@
   {
     "name": "10 Мечей",
     "url": "ten_of_swords",
-    "image": "/cards/minor_arcana_swords_10.png",
+    "image": "/media/cards/minor_arcana_swords_10.png",
     "desc": "Конец цикла, поражение, крах, неизбежные перемены.",
     "message": "принять конец",
     "rdesc": "Затянутая боль, сопротивление переменам, страдание.",
@@ -684,7 +684,7 @@
   {
     "name": "Паж Мечей",
     "url": "page_of_swords",
-    "image": "/cards/minor_arcana_swords_page.png",
+    "image": "/media/cards/minor_arcana_swords_page.png",
     "desc": "Любознательность, наблюдательность, новые идеи, сообщения.",
     "message": "следить и учиться",
     "rdesc": "Болтливость, сплетни, поверхностные знания.",
@@ -695,7 +695,7 @@
   {
     "name": "Рыцарь Мечей",
     "url": "knight_of_swords",
-    "image": "/cards/minor_arcana_swords_knight.png",
+    "image": "/media/cards/minor_arcana_swords_knight.png",
     "desc": "Энергия, решительность, стремление к цели, активные действия.",
     "message": "действовать смело",
     "rdesc": "Импульсивность, агрессия, поспешные решения.",
@@ -706,7 +706,7 @@
   {
     "name": "Королева Мечей",
     "url": "queen_of_swords",
-    "image": "/cards/minor_arcana_swords_queen.png",
+    "image": "/media/cards/minor_arcana_swords_queen.png",
     "desc": "Интеллект, честность, проницательность, ясное мышление.",
     "message": "проявлять мудрость и рассудительность",
     "rdesc": "Холодность, цинизм, критичность.",
@@ -717,7 +717,7 @@
   {
     "name": "Король Мечей",
     "url": "king_of_swords",
-    "image": "/cards/minor_arcana_swords_king.png",
+    "image": "/media/cards/minor_arcana_swords_king.png",
     "desc": "Разум, аналитика, власть, стратегическое мышление.",
     "message": "управлять разумом",
     "rdesc": "Тиран, жесткость, злоупотребление властью.",
@@ -728,7 +728,7 @@
   {
     "name": "Туз Пентаклей",
     "url": "ace_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_ace.png",
+    "image": "/media/cards/minor_arcana_pentacles_ace.png",
     "desc": "Новые материальные возможности, успех в делах, финансовый рост.",
     "message": "начать новый проект",
     "rdesc": "Потеря, задержка, упущенные возможности.",
@@ -739,7 +739,7 @@
   {
     "name": "1 Пентаклей",
     "url": "two_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_2.png",
+    "image": "/media/cards/minor_arcana_pentacles_2.png",
     "desc": "Баланс, гибкость, управление ресурсами, адаптация.",
     "message": "найти баланс",
     "rdesc": "Неустойчивость, хаос, перегрузка.",
@@ -750,7 +750,7 @@
   {
     "name": "3 Пентаклей",
     "url": "three_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_3.png",
+    "image": "/media/cards/minor_arcana_pentacles_3.png",
     "desc": "Командная работа, мастерство, признание, совместные проекты.",
     "message": "создавать вместе",
     "rdesc": "Недостаток навыков, неуважение, плохое сотрудничество.",
@@ -761,7 +761,7 @@
   {
     "name": "4 Пентаклей",
     "url": "four_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_4.png",
+    "image": "/media/cards/minor_arcana_pentacles_4.png",
     "desc": "Стабильность, сохранение ресурсов, осторожность в финансах.",
     "message": "сохранять",
     "rdesc": "Скупость, жадность, страх потери.",
@@ -772,7 +772,7 @@
   {
     "name": "5 Пентаклей",
     "url": "five_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_5.png",
+    "image": "/media/cards/minor_arcana_pentacles_5.png",
     "desc": "Материальные трудности, бедность, изоляция, кризис.",
     "message": "преодолеть трудности",
     "rdesc": "Отчаяние, потеря, лишение поддержки.",
@@ -783,7 +783,7 @@
   {
     "name": "6 Пентаклей",
     "url": "six_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_6.png",
+    "image": "/media/cards/minor_arcana_pentacles_6.png",
     "desc": "Щедрость, помощь, финансовое равновесие, поддержка других.",
     "message": "делиться и получать помощь",
     "rdesc": "Склонность к эксплуатации, неблагодарность.",
@@ -794,7 +794,7 @@
   {
     "name": "7 Пентаклей",
     "url": "seven_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_7.png",
+    "image": "/media/cards/minor_arcana_pentacles_7.png",
     "desc": "Терпение, анализ прогресса, долгосрочные планы.",
     "message": "оценить результаты",
     "rdesc": "Нетерпение, разочарование, поспешные действия.",
@@ -805,7 +805,7 @@
   {
     "name": "8 Пентаклей",
     "url": "eight_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_8.png",
+    "image": "/media/cards/minor_arcana_pentacles_8.png",
     "desc": "Трудолюбие, мастерство, обучение, внимание к деталям.",
     "message": "совершенствоваться",
     "rdesc": "Лень, посредственность, отсутствие развития.",
@@ -816,7 +816,7 @@
   {
     "name": "9 Пентаклей",
     "url": "nine_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_9.png",
+    "image": "/media/cards/minor_arcana_pentacles_9.png",
     "desc": "Самодостаточность, успех, финансовая независимость, комфорт.",
     "message": "наслаждаться плодами труда",
     "rdesc": "Зависимость, излишняя гордость, одиночество.",
@@ -827,7 +827,7 @@
   {
     "name": "10 Пентаклей",
     "url": "ten_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_10.png",
+    "image": "/media/cards/minor_arcana_pentacles_10.png",
     "desc": "Благосостояние, наследие, семейная поддержка, стабильность.",
     "message": "создавать долговременное благополучие",
     "rdesc": "Разрушение семьи, финансовые потери, нестабильность.",
@@ -838,7 +838,7 @@
   {
     "name": "Паж Пентаклей",
     "url": "page_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_page.png",
+    "image": "/media/cards/minor_arcana_pentacles_page.png",
     "desc": "Обучение, практический интерес, новые возможности, аккуратность.",
     "message": "исследовать новые возможности",
     "rdesc": "Поверхностное изучение, отсутствие фокуса, бездействие.",
@@ -849,7 +849,7 @@
   {
     "name": "Рыцарь Пентаклей",
     "url": "knight_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_knight.png",
+    "image": "/media/cards/minor_arcana_pentacles_knight.png",
     "desc": "Трудолюбие, осторожность, надёжность, усердие.",
     "message": "действовать методично",
     "rdesc": "Медлительность, консерватизм, упрямство.",
@@ -860,7 +860,7 @@
   {
     "name": "Королева Пентаклей",
     "url": "queen_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_queen.png",
+    "image": "/media/cards/minor_arcana_pentacles_queen.png",
     "desc": "Забота, практичность, комфорт, материальная стабильность.",
     "message": "создавать уют и поддерживать других",
     "rdesc": "Материальная зависимость, излишняя забота, контроль.",
@@ -871,7 +871,7 @@
   {
     "name": "Король Пентаклей",
     "url": "king_of_pentacles",
-    "image": "/cards/minor_arcana_pentacles_king.png",
+    "image": "/media/cards/minor_arcana_pentacles_king.png",
     "desc": "Благосостояние, власть, опыт, стабильность, лидерство.",
     "message": "управлять ресурсами мудро",
     "rdesc": "Материальная жадность, диктат, застой.",
