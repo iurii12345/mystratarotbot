@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import random_card
+from . import views
 
 urlpatterns = [
-    path('random/', random_card),
+    path('', views.card_list, name='card-list'),
+    path('random/', views.random_card, name='random-card'),
 ]
