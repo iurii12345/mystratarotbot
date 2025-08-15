@@ -41,4 +41,4 @@ def card_list(request):
             **card,
             "image": get_absolute_image_url(request, card["image"])
         })
-    return JsonResponse(cards_list, safe=False)
+    return JsonResponse(cards_list, safe=False, json_dumps_params={'ensure_ascii': False})
