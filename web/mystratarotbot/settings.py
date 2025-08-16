@@ -29,8 +29,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = ["*"]
-
+if DEBUG:
+    # локальная разработка
+    ALLOWED_HOSTS = ["*"]
+else:
+    # продакшен
+    ALLOWED_HOSTS = ["103.71.20.245"]
 
 # Application definition
 
