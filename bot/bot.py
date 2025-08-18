@@ -268,6 +268,8 @@ async def process_back_to_menu(callback: CallbackQuery):
     )
     await callback.answer()
 
+async def test_function();
+
 async def send_single_card(message: Message):
     """Отправка одной случайной карты"""
     await message.answer("🔮 Тасую карты...")
@@ -385,7 +387,7 @@ async def send_work_spread(message: Message):
         return
     
     selected_cards = random.sample(cards, 3)
-    positions = ["Текущая ситуация", "Препятствия", "Совет"]
+    positions = ["Текущая ситуация", "Препятствия", "Решение"]
     
     text = "💼 **Расклад на работу**\n\n"
     
