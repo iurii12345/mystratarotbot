@@ -22,7 +22,6 @@ API_URL = "http://103.71.20.245/api/cards/"
 =======
 API_BASE_URL = os.getenv("API_BASE_URL", "http://103.71.20.245")
 API_TIMEOUT = int(os.getenv("API_TIMEOUT", "10"))
->>>>>>> c1e21147bc74b06c50df18c19b6b2143eddf077a
 
 if not TOKEN:
     raise ValueError("BOT_TOKEN не найден в переменных окружения")
