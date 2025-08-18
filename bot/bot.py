@@ -6,8 +6,6 @@ import httpx
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.filters import Command
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.memory import MemoryStorage
 import os
 from dotenv import load_dotenv
@@ -17,7 +15,6 @@ load_dotenv()
 
 # Конфигурация
 TOKEN = os.getenv("BOT_TOKEN")
-API_URL = "http://103.71.20.245/api/cards/"
 API_BASE_URL = os.getenv("API_BASE_URL", "http://103.71.20.245")
 API_TIMEOUT = int(os.getenv("API_TIMEOUT", "10"))
 
@@ -35,11 +32,6 @@ logger = logging.getLogger(__name__)
 bot = Bot(token=TOKEN)
 storage = MemoryStorage()
 dp = Dispatcher(storage=storage)
-
-# Состояния для FSM
-class TarotStates(StatesGroup):
-    waiting_for_question = State()
-    choosing_spread = State()
 
 class TarotAPI:
     """Класс для работы с API карт Таро"""
