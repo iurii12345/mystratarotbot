@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")
-# TOKEN = "6274358990:AAF3FPACng8-3Btm4sINkRGTpaAva8QPhpY"
 API_URL = "http://103.71.20.245/api/cards/"
 
 bot = Bot(token=TOKEN)

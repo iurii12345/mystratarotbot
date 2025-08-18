@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")
-API_URL_REGISTER = os.getenv("API_URL_REGISTER")  # http://<server_ip>:8000/api/users/register/
-API_URL_REQUEST = os.getenv("API_URL_REQUEST")    # http://<server_ip>:8000/api/users/requests/
+API_URL_REGISTER = os.getenv("API_URL_REGISTER")
+API_URL_REQUEST = os.getenv("API_URL_REQUEST")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
