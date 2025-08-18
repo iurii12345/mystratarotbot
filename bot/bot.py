@@ -268,8 +268,6 @@ async def process_back_to_menu(callback: CallbackQuery):
     )
     await callback.answer()
 
-async def test_function();
-
 async def send_single_card(message: Message):
     """Отправка одной случайной карты"""
     await message.answer("🔮 Тасую карты...")
