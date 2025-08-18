@@ -17,9 +17,7 @@ load_dotenv()
 
 # Конфигурация
 TOKEN = os.getenv("BOT_TOKEN")
-<<<<<<< HEAD
 API_URL = "http://103.71.20.245/api/cards/"
-=======
 API_BASE_URL = os.getenv("API_BASE_URL", "http://103.71.20.245")
 API_TIMEOUT = int(os.getenv("API_TIMEOUT", "10"))
 
