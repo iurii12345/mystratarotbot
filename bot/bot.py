@@ -398,6 +398,10 @@ async def send_love_spread(message: Message):
     
     await message.answer(text, parse_mode="Markdown", reply_markup=back_keyboard)
 
+    image_file = generate_multi_card_image(selected_cards)
+    if image_file:
+        await message.answer_photo(photo=image_file)
+
 async def send_work_spread(message: Message):
     """Расклад на работу (3 карты)"""
     await message.answer("💼 Создаю расклад на работу...")
@@ -431,6 +435,10 @@ async def send_work_spread(message: Message):
     )
     
     await message.answer(text, parse_mode="Markdown", reply_markup=back_keyboard)
+
+    image_file = generate_multi_card_image(selected_cards)
+    if image_file:
+        await message.answer_photo(photo=image_file)
 
 @dp.message()
 async def handle_text_message(message: Message):
