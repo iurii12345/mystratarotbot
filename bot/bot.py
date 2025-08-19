@@ -8,7 +8,7 @@ from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, C
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BufferedInputFile
-from images import generate_single_card_image, generate_three_card_image, generate_two_card_image
+from images import generate_single_card_image, generate_three_card_image, generate_two_card_image, generate_celtic_cross_image
 import os
 from dotenv import load_dotenv
 
@@ -176,6 +176,7 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="🌅 Расклад на день", callback_data="daily_spread")],
             [InlineKeyboardButton(text="💕 Расклад на любовь", callback_data="love_spread")],
             [InlineKeyboardButton(text="💼 Расклад на работу", callback_data="work_spread")],
+            [InlineKeyboardButton(text="💼 Расклад Кельтский крест", callback_data="celtic_cross_spread")],
             [InlineKeyboardButton(text="❓ Помощь", callback_data="help")]
         ]
     )
@@ -235,6 +236,12 @@ async def process_love_spread(callback: CallbackQuery):
 async def process_work_spread(callback: CallbackQuery):
     """Обработчик расклада на работу"""
     await send_work_spread(callback.message)
+    await callback.answer()
+
+@dp.callback_query(lambda c: c.data == "celtic_cross_spread")
+async def process_celtic_cross_spread(callback: CallbackQuery):
+    """Обработчик расклада на работу"""
+    await send_celtic_cross_spread(callback.message)
     await callback.answer()
 
 @dp.callback_query(lambda c: c.data == "help")
@@ -332,6 +339,27 @@ async def send_work_spread(message: Message):
     text = format_card_message(selected_cards, positions, is_reversed_list, "Расклад на работу")
     
     image_file = generate_three_card_image(selected_cards, is_reversed_list)
+    if image_file:
+        await message.answer_photo(photo=image_file, caption=text)
+    else:
+        await message.answer(text)
+
+async def send_celtic_cross_spread(message: Message):
+    await message.answer("💼 ...")
+    await save_user_request(message.from_user.id, "Расклад Кельтский крест")
+    
+    cards = await tarot_api.get_cards()
+    if not cards or len(cards) < 10:
+        await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
+        return
+    
+    selected_cards = random.sample(cards, 10)
+    positions = ["1", "2", "3", "4" , "5" ,"6" ,"7" ,"8" ,"9" ,"10"]
+    is_reversed_list = [random.choice([True, False]) for _ in range(10)]
+    
+    text = format_card_message(selected_cards, positions, is_reversed_list, "Расклад Кельтский крест")
+    
+    image_file = generate_celtic_cross_image(selected_cards, is_reversed_list)
     if image_file:
         await message.answer_photo(photo=image_file, caption=text)
     else:

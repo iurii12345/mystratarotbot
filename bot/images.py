@@ -180,55 +180,91 @@ def generate_three_card_image(cards: list[Dict[Any, Any]], is_reversed_list: lis
         return None
 
 
-# def img_gen_celtic_cross(bg, card1, card2, card3, card4, card5, card6, card7, card8, card9, card10):
-#     bg_resize = Image.open(bg).resize((1280, 1280))
-#     # bg_resize = Image.open(bg).resize((1280, 1280)).filter(ImageFilter.GaussianBlur(radius=10))
-#     card_resize1 = Image.open(card1).resize((174, 300))
-#     card_resize2 = Image.open(card2).resize((174, 300)).rotate(90, expand=True)
-#     card_resize3 = Image.open(card3).resize((174, 300))
-#     card_resize4 = Image.open(card4).resize((174, 300))
-#     card_resize5 = Image.open(card5).resize((174, 300))
-#     card_resize6 = Image.open(card6).resize((174, 300))
-#     card_resize7 = Image.open(card7).resize((174, 300))
-#     card_resize8 = Image.open(card8).resize((174, 300))
-#     card_resize9 = Image.open(card9).resize((174, 300))
-#     card_resize10 = Image.open(card10).resize((174, 300))
-#     bg_resize.paste(card_resize1, (374, 490))
-#     bg_resize.paste(card_resize2, (311, 553))
-#     bg_resize.paste(card_resize3, (374, 890))
-#     bg_resize.paste(card_resize4, (40, 490))
-#     bg_resize.paste(card_resize5, (374, 90))
-#     bg_resize.paste(card_resize6, (708, 490))
-#     bg_resize.paste(card_resize7, (1066, 964))
-#     bg_resize.paste(card_resize8, (1066, 648))
-#     bg_resize.paste(card_resize9, (1066, 332))
-#     bg_resize.paste(card_resize10, (1066, 16))
-    
-#     # get a font
-#     fnt = ImageFont.truetype("src/fonts/RobotoMono-Regular.ttf", 40)
-#     # get a drawing context
-#     d = ImageDraw.Draw(bg_resize)
-#     # draw text
-#     d.text((449, 440), "1", font=fnt, fill=(255, 255, 255, 128))
-#     d.text((277, 610), "2", font=fnt, fill=(255, 255, 255, 128))
-#     d.text((449, 840), "3", font=fnt, fill=(255, 255, 255, 128))
-#     d.text((115, 440), "4", font=fnt, fill=(255, 255, 255, 128))
-#     d.text((449, 40), "5", font=fnt, fill=(255, 255, 255, 128))
-#     d.text((783, 440), "6", font=fnt, fill=(255, 255, 255, 128))
-#     d.text((1032, 1084), "7", font=fnt, fill=(255, 255, 255, 128))
-#     d.text((1032, 768), "8", font=fnt, fill=(255, 255, 255, 128))
-#     d.text((1032, 452), "9", font=fnt, fill=(255, 255, 255, 128))
-#     d.text((1008, 136), "10", font=fnt, fill=(255, 255, 255, 128))
+def generate_celtic_cross_image(cards: list[Dict[Any, Any]], is_reversed_list: list[bool]) -> Optional[BufferedInputFile]:
+    """
+    Создаёт изображение с фоном и десятью картами для расклада Кельтский крест.
+    cards: список из 10 словарей с ключами 'image' и 'name'.
+    is_reversed_list: список из 10 bool, указывает, перевернута ли карта.
+    """
+    try:
+        if len(cards) != 10 or len(is_reversed_list) != 10:
+            raise ValueError("Нужно ровно 10 карт и 10 значений для переворота")
 
-#     bg_resize.save('result.png', 'png')
-#     result = bg_resize
-#     card_resize1.close()
-#     card_resize3.close()
-#     card_resize4.close()
-#     card_resize5.close()
-#     card_resize6.close()
-#     card_resize7.close()
-#     card_resize8.close()
-#     card_resize9.close()
-#     card_resize10.close()
-#     return result
+        background = _load_background()
+        card_size = (174, 300)  # размер для карт в раскладе
+
+        card_images = []
+        for card, is_reversed in zip(cards, is_reversed_list):
+            card_url = card.get("image")
+            if not card_url:
+                raise ValueError(f"У карты {card.get('name', '')} нет пути к изображению")
+            
+            card_filename = Path(card_url).name
+            card_image_path = Path("/var/www/mystratarotbot/web/media/cards") / card_filename
+            card_image = Image.open(card_image_path).convert("RGBA")
+
+            if is_reversed:
+                card_image = card_image.transpose(Image.ROTATE_180)
+
+            card_image = card_image.resize(card_size, Image.Resampling.LANCZOS)
+            card_images.append(card_image)
+
+        # Позиции для 10 карт в раскладе Кельтский крест
+        positions = [
+            (374, 490),  # карта 1 - центр
+            (311, 553),  # карта 2 - поперёк первой
+            (374, 890),  # карта 3 - внизу
+            (40, 490),   # карта 4 - слева
+            (374, 90),   # карта 5 - сверху
+            (708, 490),  # карта 6 - справа
+            (1066, 964), # карта 7 - столб справа (низ)
+            (1066, 648), # карта 8 - столб справа
+            (1066, 332), # карта 9 - столб справа
+            (1066, 16)   # карта 10 - столб справа (верх)
+        ]
+
+        # Вращаем вторую карту на 90 градусов (она ложится поперёк)
+        card_images[1] = card_images[1].transpose(Image.ROTATE_90)
+
+        # Вставляем карты на фон
+        for pos, card_image in zip(positions, card_images):
+            background.paste(card_image, pos, card_image)
+
+        # Добавляем подписи номеров карт
+        draw = ImageDraw.Draw(background)
+        try:
+            # Пытаемся загрузить шрифт
+            project_root = Path(__file__).parent.parent
+            font_path = project_root / "src/fonts/RobotoMono-Regular.ttf"
+            font = ImageFont.truetype(str(font_path), 40)
+        except:
+            # Если шрифт не найден, используем стандартный
+            font = ImageFont.load_default(40)
+
+        # Позиции для текстовых меток
+        text_positions = [
+            (449, 440),   # 1
+            (277, 610),   # 2
+            (449, 840),   # 3
+            (115, 440),   # 4
+            (449, 40),    # 5
+            (783, 440),   # 6
+            (1032, 1084), # 7
+            (1032, 768),  # 8
+            (1032, 452),  # 9
+            (1008, 136)   # 10
+        ]
+
+        for idx, (x, y) in enumerate(text_positions, start=1):
+            text = str(idx)
+            draw.text((x, y), text, font=font, fill=(255, 255, 255, 128))
+
+        # Сохраняем в буфер
+        bio = io.BytesIO()
+        background.save(bio, format="PNG")
+        bio.seek(0)
+        return BufferedInputFile(bio.read(), filename="celtic_cross.png")
+
+    except Exception as e:
+        logger.error(f"Ошибка генерации картинки Кельтского креста: {e}")
+        return None
