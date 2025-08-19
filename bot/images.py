@@ -93,6 +93,17 @@ def generate_two_card_image(cards: list[Dict[Any, Any]], is_reversed_list: list[
         for x, ci in zip(x_positions, card_images):
             background.paste(ci, (x, y_position), ci)
 
+        # Добавляем подписи 1,2 под картами
+        draw = ImageDraw.Draw(background)
+        font = ImageFont.load_default(40)
+
+        for idx, (x, ci) in enumerate(zip(x_positions, card_images), start=1):
+            text = str(idx)
+            bbox = draw.textbbox((0, 0), text, font=font)
+            text_width, text_height = bbox[2] - bbox[0], bbox[3] - bbox[1]
+            text_x = x + (ci.width - text_width) // 2
+            text_y = y_position + ci.height + 10
+
         # Сохраняем в буфер
         bio = io.BytesIO()
         background.save(bio, format="PNG")
