@@ -201,7 +201,9 @@ def generate_three_card_image(cards: list[Dict[Any, Any]], is_reversed_list: lis
         font = ImageFont.load_default()
         for idx, (x, ci) in enumerate(zip(x_positions, card_images), start=1):
             text = str(idx)
-            text_width, text_height = draw.textsize(text, font=font)
+            # Получаем прямоугольник текста
+            bbox = draw.textbbox((0, 0), text, font=font)
+            text_width, text_height = bbox[2] - bbox[0], bbox[3] - bbox[1]
             text_x = x + (ci.width - text_width) // 2
             text_y = y_position + ci.height + 10
             draw.text((text_x, text_y), text, font=font, fill="white")
