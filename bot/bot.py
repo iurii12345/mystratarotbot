@@ -172,11 +172,11 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
     """Создание основной клавиатуры"""
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🎴 Одна карта", callback_data="single_card")],
+            [InlineKeyboardButton(text="Одна карта", callback_data="single_card")],
             [InlineKeyboardButton(text="🌅 Расклад на день", callback_data="daily_spread")],
             [InlineKeyboardButton(text="💕 Расклад на любовь", callback_data="love_spread")],
             [InlineKeyboardButton(text="💼 Расклад на работу", callback_data="work_spread")],
-            [InlineKeyboardButton(text="💼 Расклад Кельтский крест", callback_data="celtic_cross_spread")],
+            [InlineKeyboardButton(text="Расклад Кельтский крест", callback_data="celtic_cross_spread")],
             [InlineKeyboardButton(text="❓ Помощь", callback_data="help")]
         ]
     )
