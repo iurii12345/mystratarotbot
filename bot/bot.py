@@ -344,14 +344,15 @@ async def send_love_spread(message: Message):
         return
     
     selected_cards = random.sample(cards, 2)
-    positions = ["Ваши чувства", "Чувства партнера"]
+    positions = ["1. Ваши чувства", "2. Чувства партнера"]
 
     # Определяем положение каждой карты
     is_reversed_list = [random.choice([True, False]) for _ in range(2)]
     
     text = "💕 Расклад на любовь\n\n" 
     for card, position, is_reversed in zip(selected_cards, positions, is_reversed_list):
-        text += f"{position}: {card.get('name', 'Неизвестная карта')}{' 🔄' if is_reversed else ''}\n"
+        text += f"{position}:\n"
+        text += f"{card.get('name', 'Неизвестная карта')}{' 🔄' if is_reversed else ''}\n"
         text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
 
     image_file = generate_two_card_image(selected_cards, is_reversed_list)
