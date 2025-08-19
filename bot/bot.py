@@ -214,8 +214,6 @@ async def help_command(message: Message):
         "**Доступные команды:**\n"
         "/start - Главное меню\n"
         "/help - Эта справка\n"
-        "/random - Случайная карта\n"
-        "/picture - Тест картинки\n\n"
         "**Типы раскладов:**\n"
         "🎴 **Одна карта** - быстрый ответ на вопрос\n"
         "🔮 **Расклад на день** - что ждет вас сегодня\n"
@@ -229,31 +227,6 @@ async def help_command(message: Message):
     )
     
     await message.answer(help_text, reply_markup=get_main_keyboard(), parse_mode="Markdown")
-
-@dp.message(Command("random"))
-async def random_card_command(message: Message):
-    """Обработчик команды /random"""
-    await send_single_card(message)
-
-@dp.message(Command("picture"))
-async def cmd_picture(message: Message):
-    img = Image.new("RGB", (400, 200), color=(255, 255, 255))
-    draw = ImageDraw.Draw(img)
-    text = f"Hello, {message.from_user.first_name}!"
-    font = ImageFont.load_default()
-    draw.text((50, 80), text, font=font, fill=(0, 0, 0))
-
-    # Сохраняем в байты
-    bio = io.BytesIO()
-    img.save(bio, format="PNG")
-    bio.seek(0)
-
-    # Создаём BufferedInputFile
-    input_file = BufferedInputFile(bio.read(), filename="image.png")
-
-    # Отправляем именно input_file
-    await message.answer_photo(photo=input_file)
-
 
 @dp.callback_query(lambda c: c.data == "single_card")
 async def process_single_card(callback: CallbackQuery):
