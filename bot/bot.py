@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import random
-from typing import Optional, Dict, Any
+from typing import Optional, List, Dict, Any
 import httpx
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
