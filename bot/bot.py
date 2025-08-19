@@ -351,8 +351,8 @@ async def send_love_spread(message: Message):
     
     text = "💕 **Расклад на любовь**\n\n" 
     for card, position, is_reversed in zip(selected_cards, positions, is_reversed_list):
-        text += f"**{position}:** {card.get('name', 'Неизвестная карта')}\n"
-        text += f"{'🔄 ' if is_reversed else ''}{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
+        text += f"**{position}:** {card.get('name', 'Неизвестная карта')}{'🔄 ' if is_reversed else ''}\n"
+        text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
     
     back_keyboard = InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text="🔙 Назад в меню", callback_data="back_to_menu")]]
