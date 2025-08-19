@@ -236,24 +236,19 @@ async def random_card_command(message: Message):
 
 @dp.message(Command("picture"))
 async def cmd_picture(message: Message):
-    # Создаем картинку 400x200
     img = Image.new("RGB", (400, 200), color=(255, 255, 255))
     draw = ImageDraw.Draw(img)
-
-    # Добавляем текст
     text = f"Hello, {message.from_user.first_name}!"
     font = ImageFont.load_default()
     draw.text((50, 80), text, font=font, fill=(0, 0, 0))
 
-    # Сохраняем в байты
     bio = io.BytesIO()
     img.save(bio, format="PNG")
-    bio.seek(0)  # <--- важно, перематываем в начало
+    bio.seek(0)
 
-    # Создаём BufferedInputFile
     input_file = BufferedInputFile(bio.read(), filename="image.png")
 
-    # Отправляем именно input_file
+    # 👇 обязательно явно указываем photo=
     await message.answer_photo(photo=input_file)
 
 
