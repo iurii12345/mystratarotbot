@@ -223,8 +223,8 @@ def generate_celtic_cross_image(cards: list[Dict[Any, Any]], is_reversed_list: l
             (1066, 16)   # карта 10 - столб справа (верх)
         ]
 
-        # Вращаем вторую карту на 90 градусов (она ложится поперёк)
-        card_images[1] = card_images[1].transpose(Image.ROTATE_90)
+        # Вращаем вторую карту на 270 градусов (она ложится поперёк)
+        card_images[1] = card_images[1].transpose(Image.ROTATE_270)
 
         # Вставляем карты на фон
         for pos, card_image in zip(positions, card_images):
