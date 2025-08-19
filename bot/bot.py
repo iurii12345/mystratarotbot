@@ -148,18 +148,10 @@ def format_card_message(card: Dict[Any, Any], is_reversed: bool = False) -> str:
     """Форматирование сообщения с информацией о карте"""
     name = card.get('name', 'Неизвестная карта')
     
-    if is_reversed:
-        description = card.get('rdesc', 'Описание перевернутого значения отсутствует')
-        position = "🔄 Перевернутая позиция"
-    else:
-        description = card.get('desc', 'Описание отсутствует')
-        position = "Прямая позиция"
-    
     message_text = card.get('message', '')
     
-    text = f"🎴 **{name}**\n\n"
-    text += f"{position}\n\n"
-    text += f"📖 **Описание:** {description}\n"
+    text += f"{'🔄 ' if is_reversed else ''}{card.get('name', 'Неизвестная карта')}\n"
+    text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
     
     if message_text:
         text += f"\n💫 **Послание:** {message_text}"
@@ -204,8 +196,7 @@ async def start_command(message: Message):
 async def help_command(message: Message):
     """Обработчик команды /help"""
     help_text = (
-        "🔮 **Помощь по использованию бота**\n\n"
-        "**Доступные команды:**\n"
+        "Доступные команды:\n"
         "/start - Главное меню\n"
         "/help - Эта справка\n"
     )
@@ -367,11 +358,11 @@ async def send_work_spread(message: Message):
     selected_cards = random.sample(cards, 3)
     positions = ["Текущая ситуация", "Препятствия", "Решение"]
     
-    text = "💼 **Расклад на работу**\n\n"
+    text = "💼 Расклад на работу\n\n"
     
     for card, position in zip(selected_cards, positions):
         is_reversed = random.choice([True, False])
-        text += f"**{position}:** {card.get('name', 'Неизвестная карта')}\n"
+        text += f"{position}: {card.get('name', 'Неизвестная карта')}\n"
         
         if is_reversed:
             text += f"🔄 {card.get('rdesc', 'Описание отсутствует')}\n\n"
