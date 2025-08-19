@@ -319,13 +319,6 @@ async def send_single_card(message: Message):
     )
     
     await message.answer(text, parse_mode="Markdown", reply_markup=back_keyboard)
-    
-    # Отправляем изображение, если есть
-    if card.get("image"):
-        try:
-            await message.answer_photo(card["image"])
-        except Exception as e:
-            logger.error(f"Ошибка отправки изображения: {e}")
 
     # Отправляем сгенерированное изображение
     image_file = generate_single_card_image(card)
@@ -366,6 +359,10 @@ async def send_daily_spread(message: Message):
     )
     
     await message.answer(text, parse_mode="Markdown", reply_markup=back_keyboard)
+
+    image_file = generate_multi_card_image(selected_cards)
+    if image_file:
+        await message.answer_photo(photo=image_file)
 
 async def send_love_spread(message: Message):
     """Расклад на любовь (2 карты)"""
