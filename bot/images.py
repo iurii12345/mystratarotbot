@@ -198,7 +198,7 @@ def generate_three_card_image(cards: list[Dict[Any, Any]], is_reversed_list: lis
 
         # Добавляем подписи 1,2,3 под картами
         draw = ImageDraw.Draw(background)
-        font = ImageFont.load_default()
+        font = ImageFont.load_default(40)
         for idx, (x, ci) in enumerate(zip(x_positions, card_images), start=1):
             text = str(idx)
             # Получаем прямоугольник текста
