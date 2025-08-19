@@ -245,13 +245,13 @@ async def cmd_picture(message: Message):
     font = ImageFont.load_default()
     draw.text((50, 80), text, font=font, fill=(0, 0, 0))
 
-    # Сохраняем в буфер
+    # Сохраняем в байты
     bio = io.BytesIO()
     img.save(bio, format="PNG")
-    bio.seek(0)
 
-    # Оборачиваем в BufferedInputFile
-    input_file = BufferedInputFile(bio.read(), filename="image.png")
+    # Важно: читаем содержимое и передаём в BufferedInputFile
+    image_bytes = bio.getvalue()
+    input_file = BufferedInputFile(image_bytes, filename="image.png")
 
     # Отправляем
     await message.answer_photo(input_file)
