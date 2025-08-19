@@ -344,26 +344,73 @@ async def send_work_spread(message: Message):
     else:
         await message.answer(text)
 
-async def send_celtic_cross_spread(message: Message):
-    await message.answer("💼 ...")
-    await save_user_request(message.from_user.id, "Расклад Кельтский крест")
-    
-    cards = await tarot_api.get_cards()
-    if not cards or len(cards) < 10:
-        await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
-        return
-    
-    selected_cards = random.sample(cards, 10)
-    positions = ["1", "2", "3", "4" , "5" ,"6" ,"7" ,"8" ,"9" ,"10"]
-    is_reversed_list = [random.choice([True, False]) for _ in range(10)]
-    
-    text = format_card_message(selected_cards, positions, is_reversed_list, "Расклад Кельтский крест")
-    
-    image_file = generate_celtic_cross_image(selected_cards, is_reversed_list)
-    if image_file:
-        await message.answer_photo(photo=image_file, caption=text)
-    else:
-        await message.answer(text)
+async def send_celtic_cross_spread(message: Message, question: str = None):
+    """Расклад Кельтский крест с улучшенной обработкой"""
+    try:
+        # Проверка лимита запросов
+        if not rate_limiter.can_make_request(message.from_user.id):
+            await message.answer("⏳ Пожалуйста, подождите перед следующим запросом")
+            return
+        
+        progress_msg = await message.answer("🔮 Создаю расклад Кельтский крест...")
+        
+        # Сохранение запроса
+        request_text = "Расклад Кельтский крест"
+        if question:
+            request_text += f": {question}"
+        await save_user_request(message.from_user.id, request_text)
+        
+        # Получение карт
+        cards = await tarot_api.get_cards()
+        if not validate_cards_count(cards, 10):
+            await progress_msg.delete()
+            await message.answer("😔 Недостаточно карт для расклада.", reply_markup=get_main_keyboard())
+            return
+        
+        # Выбор карт
+        selected_cards = random.sample(cards, 10)
+        positions = [
+            "1. Настоящая ситуация", 
+            "2. Вызов", 
+            "3. Бессознательное", 
+            "4. Прошлое", 
+            "5. Сознательное", 
+            "6. Будущее",
+            "7. Ваше отношение", 
+            "8. Внешнее влияние", 
+            "9. Надежды/страхи", 
+            "10. Итог"
+        ]
+        is_reversed_list = [random.choice([True, False]) for _ in range(10)]
+        
+        # Генерация текста и изображения
+        text = format_card_message(selected_cards, positions, is_reversed_list, 
+                                 "🔮 Расклад Кельтский крест" + (f"\n💭 Вопрос: {question}" if question else ""))
+        
+        image_file = generate_celtic_cross_image(selected_cards, is_reversed_list)
+        
+        await progress_msg.delete()
+        
+        if image_file:
+            await message.answer_photo(
+                photo=image_file, 
+                caption=text, 
+                parse_mode="Markdown",
+                reply_markup=get_main_keyboard()
+            )
+        else:
+            await message.answer(
+                text, 
+                parse_mode="Markdown",
+                reply_markup=get_main_keyboard()
+            )
+            
+    except Exception as e:
+        logger.error(f"Ошибка в send_celtic_cross_spread: {e}", exc_info=True)
+        await message.answer(
+            "❌ Произошла ошибка при создании расклада",
+            reply_markup=get_main_keyboard()
+        )
 
 
 @dp.message()
