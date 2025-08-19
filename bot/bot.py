@@ -248,13 +248,13 @@ async def cmd_picture(message: Message):
     # Сохраняем в байты
     bio = io.BytesIO()
     img.save(bio, format="PNG")
+    bio.seek(0)  # <--- важно, перематываем в начало
 
-    # Важно: читаем содержимое и передаём в BufferedInputFile
-    image_bytes = bio.getvalue()
-    input_file = BufferedInputFile(image_bytes, filename="image.png")
+    # Создаём BufferedInputFile
+    input_file = BufferedInputFile(bio.read(), filename="image.png")
 
-    # Отправляем
-    await message.answer_photo(input_file)
+    # Отправляем именно input_file
+    await message.answer_photo(photo=input_file)
 
 
 @dp.callback_query(lambda c: c.data == "single_card")
