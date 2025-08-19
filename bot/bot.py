@@ -312,28 +312,24 @@ async def send_daily_spread(message: Message):
         )
         return
     
-    # Выбираем 3 случайные карты
     selected_cards = random.sample(cards, 3)
     positions = ["Утро", "День", "Вечер"]
+
+    # Определяем положение каждой карты
+    is_reversed_list = [random.choice([True, False]) for _ in range(3)]
     
     text = "🌅 **Расклад на день**\n\n"
-    
-    for i, (card, position) in enumerate(zip(selected_cards, positions)):
-        is_reversed = random.choice([True, False])
+    for card, position, is_reversed in zip(selected_cards, positions, is_reversed_list):
         text += f"**{position}:** {card.get('name', 'Неизвестная карта')}\n"
-        
-        if is_reversed:
-            text += f"🔄 {card.get('rdesc', 'Описание отсутствует')}\n\n"
-        else:
-            text += f"⬆️ {card.get('desc', 'Описание отсутствует')}\n\n"
-    
+        text += f"{'🔄 ' if is_reversed else '⬆️ '}{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
+
     back_keyboard = InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text="🔙 Назад в меню", callback_data="back_to_menu")]]
     )
     
     await message.answer(text, parse_mode="Markdown", reply_markup=back_keyboard)
 
-    image_file = generate_multi_card_image(selected_cards)
+    image_file = generate_three_card_image(selected_cards, is_reversed_list)
     if image_file:
         await message.answer_photo(photo=image_file)
 
