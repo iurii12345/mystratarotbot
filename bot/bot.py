@@ -152,7 +152,7 @@ def format_card_message(card: Dict[Any, Any], is_reversed: bool = False) -> str:
     text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
     
     if message_text:
-        text += f"\n💫 **Послание:** {message_text}"
+        text += f"💫 **Послание:** {message_text}"
     
     return text
 
