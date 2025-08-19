@@ -10,7 +10,7 @@ from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BufferedInputFile
 from PIL import Image, ImageDraw, ImageFont
-from images import generate_single_card_image, generate_multi_card_image
+from images import generate_single_card_image, generate_three_card_image, generate_multi_card_image
 import os
 from dotenv import load_dotenv
 
