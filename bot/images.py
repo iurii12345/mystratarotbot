@@ -66,14 +66,14 @@ def generate_two_card_image(cards: list[Dict[Any, Any]], is_reversed_list: list[
             raise ValueError("Нужно ровно 2 карты и 2 значения для переворота")
 
         background = _load_background()
-        max_width, max_height = 492, 1124  # масштабируем карты чуть шире
+        max_width, max_height = 324, 564
 
         card_images = []
         for card, is_reversed in zip(cards, is_reversed_list):
             card_url = card.get("image")
             if not card_url:
                 raise ValueError(f"У карты {card.get('name', '')} нет пути к изображению")
-            
+
             card_filename = Path(card_url).name
             card_image_path = Path("/var/www/mystratarotbot/web/media/cards") / card_filename
             card_image = Image.open(card_image_path).convert("RGBA")
@@ -84,7 +84,7 @@ def generate_two_card_image(cards: list[Dict[Any, Any]], is_reversed_list: list[
             card_image.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
             card_images.append(card_image)
 
-        # Вычисляем позиции двух карт на фоне
+        # Позиции для двух карт
         spacing = (background.width - sum(ci.width for ci in card_images)) // 3
         x_positions = [spacing, spacing * 2 + card_images[0].width]
         y_position = (background.height - max(ci.height for ci in card_images)) // 2
