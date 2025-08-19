@@ -328,7 +328,7 @@ async def send_single_card(message: Message):
             logger.error(f"Ошибка отправки изображения: {e}")
 
     # Отправляем сгенерированное изображение
-    image_file = await generate_card_image(card)
+    image_file = generate_single_card_image(card)
     if image_file:
         await message.answer_photo(photo=image_file)
 
