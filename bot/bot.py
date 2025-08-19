@@ -290,18 +290,13 @@ async def send_single_card(message: Message):
 
     # Генерируем изображение карты поверх фона
     image_file = generate_single_card_image(card, is_reversed)
-    
-    # Клавиатура для возврата в меню
-    back_keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[[InlineKeyboardButton(text="🔙 Назад в меню", callback_data="back_to_menu")]]
-    )
 
     if image_file:
         # Отправляем изображение с подписью и кнопкой
-        await message.answer_photo(photo=image_file, caption=text, reply_markup=back_keyboard)
+        await message.answer_photo(photo=image_file, caption=text)
     else:
         # Если генерация изображения не удалась, просто отправляем текст
-        await message.answer(text, reply_markup=back_keyboard)
+        await message.answer(text)
 
 async def send_daily_spread(message: Message):
     """Расклад на день (3 карты)"""
