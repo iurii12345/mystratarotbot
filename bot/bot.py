@@ -214,7 +214,7 @@ async def help_command(message: Message):
         "/start - Главное меню\n"
         "/help - Эта справка\n"
         "/random - Случайная карта\n\n"
-        "/picture - Тест картинки"
+        "/picture - Тест картинки\n\n"
         "**Типы раскладов:**\n"
         "🎴 **Одна карта** - быстрый ответ на вопрос\n"
         "🔮 **Расклад на день** - что ждет вас сегодня\n"
@@ -242,13 +242,15 @@ async def cmd_picture(message: Message):
     font = ImageFont.load_default()
     draw.text((50, 80), text, font=font, fill=(0, 0, 0))
 
+    # Сохраняем в байты
     bio = io.BytesIO()
     img.save(bio, format="PNG")
     bio.seek(0)
 
+    # Создаём BufferedInputFile
     input_file = BufferedInputFile(bio.read(), filename="image.png")
 
-    # 👇 обязательно явно указываем photo=
+    # Отправляем именно input_file
     await message.answer_photo(photo=input_file)
 
 
