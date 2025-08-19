@@ -107,6 +107,54 @@ def generate_three_card_image(cards: list[Dict[Any, Any]], is_reversed_list: lis
         logger.error(f"Ошибка генерации картинки трёх карт: {e}")
         return None
     
+def generate_two_card_image(cards: list[Dict[Any, Any]], is_reversed_list: list[bool]) -> Optional[BufferedInputFile]:
+    """
+    Создаёт изображение с фоном и двумя картами.
+    cards: список из 2 словарей с ключами 'image' и 'name'.
+    is_reversed_list: список из 2 bool, указывает, перевернута ли карта.
+    """
+    try:
+        if len(cards) != 2 or len(is_reversed_list) != 2:
+            raise ValueError("Нужно ровно 2 карты и 2 значения для переворота")
+
+        background = _load_background()
+        max_width, max_height = 900, 1124  # масштабируем карты чуть шире
+
+        card_images = []
+        for card, is_reversed in zip(cards, is_reversed_list):
+            card_url = card.get("image")
+            if not card_url:
+                raise ValueError(f"У карты {card.get('name', '')} нет пути к изображению")
+            
+            card_filename = Path(card_url).name
+            card_image_path = Path("/var/www/mystratarotbot/web/media/cards") / card_filename
+            card_image = Image.open(card_image_path).convert("RGBA")
+
+            if is_reversed:
+                card_image = card_image.transpose(Image.ROTATE_180)
+
+            card_image.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
+            card_images.append(card_image)
+
+        # Вычисляем позиции двух карт на фоне
+        spacing = (background.width - sum(ci.width for ci in card_images)) // 3
+        x_positions = [spacing, spacing * 2 + card_images[0].width]
+        y_position = (background.height - max(ci.height for ci in card_images)) // 2
+
+        # Вставляем карты на фон
+        for x, ci in zip(x_positions, card_images):
+            background.paste(ci, (x, y_position), ci)
+
+        # Сохраняем в буфер
+        bio = io.BytesIO()
+        background.save(bio, format="PNG")
+        bio.seek(0)
+        return BufferedInputFile(bio.read(), filename="two_cards.png")
+
+    except Exception as e:
+        logger.error(f"Ошибка генерации картинки двух карт: {e}")
+        return None
+
 def generate_multi_card_image(cards: List[Dict[Any, Any]]) -> Optional[BufferedInputFile]:
     """Создаёт картинку с несколькими картами (пути на фоне)"""
     try:

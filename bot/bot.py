@@ -10,7 +10,7 @@ from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BufferedInputFile
 from PIL import Image, ImageDraw, ImageFont
-from images import generate_single_card_image, generate_three_card_image, generate_multi_card_image
+from images import generate_single_card_image, generate_three_card_image, generate_two_card_image, generate_multi_card_image
 import os
 from dotenv import load_dotenv
 
@@ -349,17 +349,16 @@ async def send_love_spread(message: Message):
     
     selected_cards = random.sample(cards, 2)
     positions = ["Ваши чувства", "Чувства партнера"]
+
+    # Определяем положение каждой карты
+    is_reversed_list = [random.choice([True, False]) for _ in range(3)]
     
     text = "💕 **Расклад на любовь**\n\n"
     
-    for card, position in zip(selected_cards, positions):
+    for card, position, is_reversed in zip(selected_cards, positions, is_reversed_list):
         is_reversed = random.choice([True, False])
         text += f"**{position}:** {card.get('name', 'Неизвестная карта')}\n"
-        
-        if is_reversed:
-            text += f"🔄 {card.get('rdesc', 'Описание отсутствует')}\n\n"
-        else:
-            text += f"⬆️ {card.get('desc', 'Описание отсутствует')}\n\n"
+        text += f"{'🔄 ' if is_reversed else '⬆️ '}{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
     
     back_keyboard = InlineKeyboardMarkup(
         inline_keyboard=[[InlineKeyboardButton(text="🔙 Назад в меню", callback_data="back_to_menu")]]
@@ -367,7 +366,7 @@ async def send_love_spread(message: Message):
     
     await message.answer(text, parse_mode="Markdown", reply_markup=back_keyboard)
 
-    image_file = generate_multi_card_image(selected_cards)
+    image_file = generate_two_card_image(selected_cards, is_reversed_list)
     if image_file:
         await message.answer_photo(photo=image_file)
 
