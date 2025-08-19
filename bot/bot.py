@@ -1,21 +1,24 @@
 import asyncio
 import logging
 import random
+import io
 from typing import Optional, Dict, Any
 import httpx
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
+from PIL import Image, ImageDraw, ImageFont
 import os
 from dotenv import load_dotenv
+
 
 # Загружаем переменные окружения
 load_dotenv()
 
 # Конфигурация
 TOKEN = os.getenv("BOT_TOKEN")
-API_BASE_URL = os.getenv("API_BASE_URL", "http://103.71.20.245")
+API_BASE_URL = os.getenv("API_BASE_URL")
 API_TIMEOUT = int(os.getenv("API_TIMEOUT", "10"))
 
 if not TOKEN:
@@ -210,6 +213,7 @@ async def help_command(message: Message):
         "/start - Главное меню\n"
         "/help - Эта справка\n"
         "/random - Случайная карта\n\n"
+        "/picture - Тест картинки"
         "**Типы раскладов:**\n"
         "🎴 **Одна карта** - быстрый ответ на вопрос\n"
         "🔮 **Расклад на день** - что ждет вас сегодня\n"
@@ -228,6 +232,25 @@ async def help_command(message: Message):
 async def random_card_command(message: Message):
     """Обработчик команды /random"""
     await send_single_card(message)
+
+@dp.message(Command("picture"))
+async def cmd_picture(message: Message):
+    # Создаем картинку 400x200
+    img = Image.new("RGB", (400, 200), color=(255, 255, 255))
+    draw = ImageDraw.Draw(img)
+
+    # Добавляем текст
+    text = f"Hello, {message.from_user.first_name}!"
+    font = ImageFont.load_default()
+    draw.text((50, 80), text, font=font, fill=(0, 0, 0))
+
+    # Сохраняем в буфер
+    bio = io.BytesIO()
+    img.save(bio, format="PNG")
+    bio.seek(0)
+
+    # Отправляем как фото
+    await message.answer_photo(bio)
 
 @dp.callback_query(lambda c: c.data == "single_card")
 async def process_single_card(callback: CallbackQuery):
