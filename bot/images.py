@@ -54,7 +54,7 @@ def generate_single_card_image(card: Dict[Any, Any], is_reversed: bool = False) 
         logger.error(f"Ошибка генерации картинки одной карты: {e}")
         return None
 
-    
+
 def generate_two_card_image(cards: list[Dict[Any, Any]], is_reversed_list: list[bool]) -> Optional[BufferedInputFile]:
     """
     Создаёт изображение с фоном и двумя картами.
@@ -102,56 +102,6 @@ def generate_two_card_image(cards: list[Dict[Any, Any]], is_reversed_list: list[
     except Exception as e:
         logger.error(f"Ошибка генерации картинки двух карт: {e}")
         return None
-
-
-# def generate_three_card_image(cards: list[Dict[Any, Any]], is_reversed_list: list[bool]) -> Optional[BufferedInputFile]:
-#     """
-#     Создаёт изображение с фоном и тремя картами.
-#     cards: список из 3 словарей с ключами 'image' и 'name'.
-#     is_reversed_list: список из 3 bool, указывает, перевернута ли карта.
-#     """
-#     try:
-#         if len(cards) != 3 or len(is_reversed_list) != 3:
-#             raise ValueError("Нужно ровно 3 карты и 3 значения для переворота")
-
-#         background = _load_background()
-#         max_width, max_height = 324, 564
-
-#         card_images = []
-#         for card, is_reversed in zip(cards, is_reversed_list):
-#             card_url = card.get("image")
-#             if not card_url:
-#                 raise ValueError(f"У карты {card.get('name', '')} нет пути к изображению")
-            
-#             card_filename = Path(card_url).name
-#             card_image_path = Path("/var/www/mystratarotbot/web/media/cards") / card_filename
-#             card_image = Image.open(card_image_path).convert("RGBA")
-
-#             if is_reversed:
-#                 card_image = card_image.transpose(Image.ROTATE_180)
-
-#             card_image.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
-#             card_images.append(card_image)
-
-#         # Вычисляем позиции для трёх карт на фоне
-#         spacing = (background.width - sum(ci.width for ci in card_images)) // 4
-#         x_positions = [spacing, spacing * 2 + card_images[0].width, spacing * 3 + card_images[0].width + card_images[1].width]
-#         y_position = (background.height - max(ci.height for ci in card_images)) // 2
-
-#         # Вставляем карты на фон
-#         for x, ci in zip(x_positions, card_images):
-#             background.paste(ci, (x, y_position), ci)
-
-#         bio = io.BytesIO()
-#         background.save(bio, format="PNG")
-#         bio.seek(0)
-#         return BufferedInputFile(bio.read(), filename="three_cards.png")
-
-#     except Exception as e:
-#         logger.error(f"Ошибка генерации картинки трёх карт: {e}")
-#         return None
-    
-
 
 
 def generate_three_card_image(cards: list[Dict[Any, Any]], is_reversed_list: list[bool]) -> Optional[BufferedInputFile]:
