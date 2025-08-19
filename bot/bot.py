@@ -268,10 +268,10 @@ async def process_back_to_menu(callback: CallbackQuery):
     await callback.answer()
 
 async def send_single_card(message: Message):
-    """Отправка одной случайной карты с подписью к изображению"""
+    """Отправка одной случайной карты с изображением и подписью"""
     await message.answer("🔮 Тасую карты...")
 
-    # Сохраняем запрос
+    # Сохраняем запрос пользователя
     await save_user_request(message.from_user.id, "Запрос одной карты")
 
     card = await tarot_api.get_random_card()
@@ -285,20 +285,23 @@ async def send_single_card(message: Message):
     # Случайно определяем, перевернута ли карта
     is_reversed = random.choice([True, False])
 
-    # Формируем текст для подписи
-    caption = format_card_message(card, is_reversed)
+    # Формируем текст с описанием карты
+    text = format_card_message(card, is_reversed)
 
-    # Генерируем изображение карты
+    # Генерируем изображение карты поверх фона
     image_file = generate_single_card_image(card, is_reversed)
-    if image_file:
-        back_keyboard = InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text="🔙 Назад в меню", callback_data="back_to_menu")]]
-        )
-        await message.answer_photo(photo=image_file, caption=caption, parse_mode="Markdown", reply_markup=back_keyboard)
-    else:
-        # Если изображение не удалось создать, отправляем текст отдельно
-        await message.answer(caption, reply_markup=get_main_keyboard())
+    
+    # Клавиатура для возврата в меню
+    back_keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text="🔙 Назад в меню", callback_data="back_to_menu")]]
+    )
 
+    if image_file:
+        # Отправляем изображение с подписью и кнопкой
+        await message.answer_photo(photo=image_file, caption=text, reply_markup=back_keyboard)
+    else:
+        # Если генерация изображения не удалась, просто отправляем текст
+        await message.answer(text, reply_markup=back_keyboard)
 
 async def send_daily_spread(message: Message):
     """Расклад на день (3 карты)"""
