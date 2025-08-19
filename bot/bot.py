@@ -144,15 +144,27 @@ async def save_user_request(user_id: int, request_text: str):
         logger.error(f"Ошибка при сохранении запроса пользователя {user_id}: {e}")
         return False
 
-def format_card_message(card: Dict[Any, Any], is_reversed: bool = False) -> str:
-    """Форматирование сообщения с информацией о карте"""
-    message_text = card.get('message', '')
+def format_card_message(
+    cards: List[Dict[str, Any]],
+    positions: List[str],
+    is_reversed_list: List[bool],
+    title: str
+) -> str:
+    """
+    Форматирование сообщения для раскладов.
+    - cards: список карт
+    - positions: список позиций (например, ["Прошлое", "Настоящее", "Будущее"])
+    - is_reversed_list: список True/False для каждой карты
+    - title: заголовок расклада
+    """
+    text = f"**{title}**\n\n"
     
-    text = f"{'🔄 ' if is_reversed else ''}{card.get('name', 'Неизвестная карта')}\n"
-    text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
-    
-    if message_text:
-        text += f"💫 Послание: {message_text}"
+    for card, position, is_reversed in zip(cards, positions, is_reversed_list):
+        text += f"**{position}:** {card.get('name', 'Неизвестная карта')}\n"
+        if is_reversed:
+            text += f"🔄 {card.get('rdesc', 'Описание отсутствует')}\n\n"
+        else:
+            text += f"⬆️ {card.get('desc', 'Описание отсутствует')}\n\n"
     
     return text
 
@@ -239,30 +251,6 @@ async def process_back_to_menu(callback: CallbackQuery):
         reply_markup=get_main_keyboard()
     )
     await callback.answer()
-
-def format_card_message(
-    cards: List[Dict[str, Any]],
-    positions: List[str],
-    is_reversed_list: List[bool],
-    title: str
-) -> str:
-    """
-    Форматирование сообщения для раскладов.
-    - cards: список карт
-    - positions: список позиций (например, ["Прошлое", "Настоящее", "Будущее"])
-    - is_reversed_list: список True/False для каждой карты
-    - title: заголовок расклада
-    """
-    text = f"**{title}**\n\n"
-    
-    for card, position, is_reversed in zip(cards, positions, is_reversed_list):
-        text += f"**{position}:** {card.get('name', 'Неизвестная карта')}\n"
-        if is_reversed:
-            text += f"🔄 {card.get('rdesc', 'Описание отсутствует')}\n\n"
-        else:
-            text += f"⬆️ {card.get('desc', 'Описание отсутствует')}\n\n"
-    
-    return text
 
 async def send_single_card(message: Message):
     """Отправка одной случайной карты"""
