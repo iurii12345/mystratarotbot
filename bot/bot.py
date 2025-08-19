@@ -171,8 +171,8 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="🎴 Одна карта", callback_data="single_card")],
-            [InlineKeyboardButton(text="🔮 Расклад на день", callback_data="daily_spread")],
-            [InlineKeyboardButton(text="💝 Расклад на любовь", callback_data="love_spread")],
+            [InlineKeyboardButton(text="🌅 Расклад на день", callback_data="daily_spread")],
+            [InlineKeyboardButton(text="💕 Расклад на любовь", callback_data="love_spread")],
             [InlineKeyboardButton(text="💼 Расклад на работу", callback_data="work_spread")],
             [InlineKeyboardButton(text="❓ Помощь", callback_data="help")]
         ]
@@ -214,8 +214,8 @@ async def help_command(message: Message):
         "/help - Эта справка\n"
         "**Типы раскладов:**\n"
         "🎴 **Одна карта** - быстрый ответ на вопрос\n"
-        "🔮 **Расклад на день** - что ждет вас сегодня\n"
-        "💝 **Расклад на любовь** - вопросы отношений\n"
+        "🌅 **Расклад на день** - что ждет вас сегодня\n"
+        "💕 **Расклад на любовь** - вопросы отношений\n"
         "💼 **Расклад на работу** - карьера и финансы\n\n"
         "**Как пользоваться:**\n"
         "1. Выберите тип расклада\n"
@@ -349,7 +349,7 @@ async def send_love_spread(message: Message):
     # Определяем положение каждой карты
     is_reversed_list = [random.choice([True, False]) for _ in range(2)]
     
-    text = "💕 **Расклад на любовь**\n\n" 
+    text = "💕 Расклад на любовь\n\n" 
     for card, position, is_reversed in zip(selected_cards, positions, is_reversed_list):
         text += f"{position}: {card.get('name', 'Неизвестная карта')}{' 🔄' if is_reversed else ''}\n"
         text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
