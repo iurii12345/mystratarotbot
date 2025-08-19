@@ -43,7 +43,7 @@ def generate_single_card_image(card: Dict[Any, Any], is_reversed: bool = False) 
 
         # Масштабируем карту, чтобы она не была слишком большой
         max_width, max_height = 600, 600
-        card_image.thumbnail((max_width, max_height), Image.ANTIALIAS)
+        card_image.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
 
         # Вычисляем позицию, чтобы разместить по центру фона
         x = (background.width - card_image.width) // 2
