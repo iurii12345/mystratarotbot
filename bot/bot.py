@@ -146,11 +146,9 @@ async def save_user_request(user_id: int, request_text: str):
 
 def format_card_message(card: Dict[Any, Any], is_reversed: bool = False) -> str:
     """Форматирование сообщения с информацией о карте"""
-    name = card.get('name', 'Неизвестная карта')
-    
     message_text = card.get('message', '')
     
-    text += f"{'🔄 ' if is_reversed else ''}{card.get('name', 'Неизвестная карта')}\n"
+    text = f"{'🔄 ' if is_reversed else ''}{card.get('name', 'Неизвестная карта')}\n"
     text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
     
     if message_text:
