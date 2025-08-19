@@ -166,3 +166,57 @@ def generate_three_card_image(cards: list[Dict[Any, Any]], is_reversed_list: lis
     except Exception as e:
         logger.error(f"Ошибка генерации картинки трёх карт: {e}")
         return None
+
+
+# def img_gen_celtic_cross(bg, card1, card2, card3, card4, card5, card6, card7, card8, card9, card10):
+#     bg_resize = Image.open(bg).resize((1280, 1280))
+#     # bg_resize = Image.open(bg).resize((1280, 1280)).filter(ImageFilter.GaussianBlur(radius=10))
+#     card_resize1 = Image.open(card1).resize((174, 300))
+#     card_resize2 = Image.open(card2).resize((174, 300)).rotate(90, expand=True)
+#     card_resize3 = Image.open(card3).resize((174, 300))
+#     card_resize4 = Image.open(card4).resize((174, 300))
+#     card_resize5 = Image.open(card5).resize((174, 300))
+#     card_resize6 = Image.open(card6).resize((174, 300))
+#     card_resize7 = Image.open(card7).resize((174, 300))
+#     card_resize8 = Image.open(card8).resize((174, 300))
+#     card_resize9 = Image.open(card9).resize((174, 300))
+#     card_resize10 = Image.open(card10).resize((174, 300))
+#     bg_resize.paste(card_resize1, (374, 490))
+#     bg_resize.paste(card_resize2, (311, 553))
+#     bg_resize.paste(card_resize3, (374, 890))
+#     bg_resize.paste(card_resize4, (40, 490))
+#     bg_resize.paste(card_resize5, (374, 90))
+#     bg_resize.paste(card_resize6, (708, 490))
+#     bg_resize.paste(card_resize7, (1066, 964))
+#     bg_resize.paste(card_resize8, (1066, 648))
+#     bg_resize.paste(card_resize9, (1066, 332))
+#     bg_resize.paste(card_resize10, (1066, 16))
+    
+#     # get a font
+#     fnt = ImageFont.truetype("src/fonts/RobotoMono-Regular.ttf", 40)
+#     # get a drawing context
+#     d = ImageDraw.Draw(bg_resize)
+#     # draw text
+#     d.text((449, 440), "1", font=fnt, fill=(255, 255, 255, 128))
+#     d.text((277, 610), "2", font=fnt, fill=(255, 255, 255, 128))
+#     d.text((449, 840), "3", font=fnt, fill=(255, 255, 255, 128))
+#     d.text((115, 440), "4", font=fnt, fill=(255, 255, 255, 128))
+#     d.text((449, 40), "5", font=fnt, fill=(255, 255, 255, 128))
+#     d.text((783, 440), "6", font=fnt, fill=(255, 255, 255, 128))
+#     d.text((1032, 1084), "7", font=fnt, fill=(255, 255, 255, 128))
+#     d.text((1032, 768), "8", font=fnt, fill=(255, 255, 255, 128))
+#     d.text((1032, 452), "9", font=fnt, fill=(255, 255, 255, 128))
+#     d.text((1008, 136), "10", font=fnt, fill=(255, 255, 255, 128))
+
+#     bg_resize.save('result.png', 'png')
+#     result = bg_resize
+#     card_resize1.close()
+#     card_resize3.close()
+#     card_resize4.close()
+#     card_resize5.close()
+#     card_resize6.close()
+#     card_resize7.close()
+#     card_resize8.close()
+#     card_resize9.close()
+#     card_resize10.close()
+#     return result
