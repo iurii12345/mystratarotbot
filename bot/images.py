@@ -71,7 +71,7 @@ def generate_three_card_image(cards: list[Dict[Any, Any]], is_reversed_list: lis
             raise ValueError("Нужно ровно 3 карты и 3 значения для переворота")
 
         background = _load_background()
-        max_width, max_height = 800, 1124
+        max_width, max_height = 324, 564
 
         card_images = []
         for card, is_reversed in zip(cards, is_reversed_list):
