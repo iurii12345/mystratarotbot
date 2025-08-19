@@ -347,11 +347,6 @@ async def send_work_spread(message: Message):
 async def send_celtic_cross_spread(message: Message, question: str = None):
     """Расклад Кельтский крест с улучшенной обработкой"""
     try:
-        # Проверка лимита запросов
-        if not rate_limiter.can_make_request(message.from_user.id):
-            await message.answer("⏳ Пожалуйста, подождите перед следующим запросом")
-            return
-        
         progress_msg = await message.answer("🔮 Создаю расклад Кельтский крест...")
         
         # Сохранение запроса
