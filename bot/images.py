@@ -15,16 +15,37 @@ def _load_background() -> Image.Image:
     return Image.open(bg_path).convert("RGBA").resize((1280, 1280))
 
 
-def generate_single_card_image(card: Dict[Any, Any]) -> Optional[BufferedInputFile]:
-    """Создаёт картинку с фоном и подписью пути к одной карте"""
+def generate_single_card_image(card: Dict[Any, Any], is_reversed: bool = False) -> Optional[BufferedInputFile]:
+    """
+    Создаёт картинку с фоном и подписью пути к одной карте
+    Если is_reversed=True — изображение карты переворачивается.
+    """
     try:
         background = _load_background()
-        draw = ImageDraw.Draw(background)
-        font = ImageFont.load_default()
 
-        image_path = card.get("image", "нет пути к картинке")
-        draw.text((20, background.height - 40), image_path, font=font, fill=(255, 255, 255, 255))
+        # Загружаем изображение карты
+        card_image_path = card.get("image")
+        if not card_image_path:
+            raise ValueError("У карты нет пути к изображению")
 
+        card_image = Image.open(card_image_path).convert("RGBA")
+
+        # Если нужно, переворачиваем карту
+        if is_reversed:
+            card_image = card_image.transpose(Image.ROTATE_180)
+
+        # Масштабируем карту, чтобы она не была слишком большой
+        max_width, max_height = 600, 600
+        card_image.thumbnail((max_width, max_height), Image.ANTIALIAS)
+
+        # Вычисляем позицию, чтобы разместить по центру фона
+        x = (background.width - card_image.width) // 2
+        y = (background.height - card_image.height) // 2
+
+        # Накладываем карту на фон
+        background.paste(card_image, (x, y), card_image)
+
+        # Сохраняем результат в буфер
         bio = io.BytesIO()
         background.save(bio, format="PNG")
         bio.seek(0)
