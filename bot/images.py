@@ -12,7 +12,7 @@ def _load_background() -> Image.Image:
     """Загружает фон"""
     project_root = Path(__file__).parent.parent  # поднимаемся на одну папку выше папки bot
     bg_path = project_root / "web/media/backgrounds/bg.png"
-    return Image.open(bg_path).convert("RGBA")
+    return Image.open(bg_path).convert("RGBA").resize((1280, 1280))
 
 
 def generate_single_card_image(card: Dict[Any, Any]) -> Optional[BufferedInputFile]:
