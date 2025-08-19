@@ -311,14 +311,14 @@ async def send_daily_spread(message: Message):
         return
     
     selected_cards = random.sample(cards, 3)
-    positions = ["Утро", "День", "Вечер"]
+    positions = ["1. Утро", "2. День", "3. Вечер"]
 
     # Определяем положение каждой карты
     is_reversed_list = [random.choice([True, False]) for _ in range(3)]
     
     text = "🌅 Расклад на день\n\n"
     for card, position, is_reversed in zip(selected_cards, positions, is_reversed_list):
-        text += f"{position}\n"
+        text += f"{position}:\n"
         text += f"{'🔄 ' if is_reversed else ''}{card.get('name', 'Неизвестная карта')}\n"
         text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
 
