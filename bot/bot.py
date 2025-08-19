@@ -268,12 +268,12 @@ async def process_back_to_menu(callback: CallbackQuery):
     await callback.answer()
 
 async def send_single_card(message: Message):
-    """Отправка одной случайной карты"""
+    """Отправка одной случайной карты с подписью к изображению"""
     await message.answer("🔮 Тасую карты...")
-    
+
     # Сохраняем запрос
     await save_user_request(message.from_user.id, "Запрос одной карты")
-    
+
     card = await tarot_api.get_random_card()
     if not card:
         await message.answer(
@@ -281,22 +281,24 @@ async def send_single_card(message: Message):
             reply_markup=get_main_keyboard()
         )
         return
-    
+
     # Случайно определяем, перевернута ли карта
     is_reversed = random.choice([True, False])
-    
-    text = format_card_message(card, is_reversed)
-    
-    back_keyboard = InlineKeyboardMarkup(
-        inline_keyboard=[[InlineKeyboardButton(text="🔙 Назад в меню", callback_data="back_to_menu")]]
-    )
-    
-    await message.answer(text, parse_mode="Markdown", reply_markup=back_keyboard)
 
-    # Отправляем сгенерированное изображение
+    # Формируем текст для подписи
+    caption = format_card_message(card, is_reversed)
+
+    # Генерируем изображение карты
     image_file = generate_single_card_image(card, is_reversed)
     if image_file:
-        await message.answer_photo(photo=image_file)
+        back_keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="🔙 Назад в меню", callback_data="back_to_menu")]]
+        )
+        await message.answer_photo(photo=image_file, caption=caption, parse_mode="Markdown", reply_markup=back_keyboard)
+    else:
+        # Если изображение не удалось создать, отправляем текст отдельно
+        await message.answer(caption, reply_markup=get_main_keyboard())
+
 
 async def send_daily_spread(message: Message):
     """Расклад на день (3 карты)"""
