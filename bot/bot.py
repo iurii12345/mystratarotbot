@@ -10,6 +10,7 @@ from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BufferedInputFile
 from PIL import Image, ImageDraw, ImageFont
+from images import generate_single_card_image, generate_multi_card_image
 import os
 from dotenv import load_dotenv
 
@@ -325,6 +326,11 @@ async def send_single_card(message: Message):
             await message.answer_photo(card["image"])
         except Exception as e:
             logger.error(f"Ошибка отправки изображения: {e}")
+
+    # Отправляем сгенерированное изображение
+    image_file = await generate_card_image(card)
+    if image_file:
+        await message.answer_photo(photo=image_file)
 
 async def send_daily_spread(message: Message):
     """Расклад на день (3 карты)"""
