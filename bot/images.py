@@ -23,25 +23,19 @@ def generate_single_card_image(card: Dict[Any, Any], is_reversed: bool = False) 
     try:
         background = _load_background()
 
-        # Получаем путь к изображению карты
         card_url = card.get("image")
         if not card_url:
-            raise ValueError("У карты нет пути к изображению")
-
-        # Преобразуем URL в локальный путь
-        # Например: 'http://103.71.20.245/media/cards/minor_arcana_pentacles_ace.png'
-        # -> '/var/www/mystratarotbot/web/media/cards/minor_arcana_pentacles_ace.png'
-        project_root = Path("/var/www/mystratarotbot/web/media")
-        relative_path = Path(card_url).parts[-2:]  # берем последние 2 части пути "cards/имя_файла.png"
-        card_image_path = project_root.joinpath(*relative_path)
-
+            raise ValueError(f"У карты {card.get('name', '')} нет пути к изображению")
+            
+        card_filename = Path(card_url).name
+        card_image_path = Path("/var/www/mystratarotbot/web/media/cards") / card_filename
         card_image = Image.open(card_image_path).convert("RGBA")
 
         if is_reversed:
             card_image = card_image.transpose(Image.ROTATE_180)
 
         # Масштабируем карту, чтобы она не была слишком большой
-        max_width, max_height = 1124, 1124
+        max_width, max_height = 662, 1124
         card_image.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
 
         # Вычисляем позицию, чтобы разместить по центру фона
