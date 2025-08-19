@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def _load_background() -> Image.Image:
     """Загружает фон"""
-    bg_path = Path(__file__).parent / "../web/media/backgrounds/bg.png"
+    bg_path = Path(__file__).parent / "web/media/backgrounds/bg.png"
     return Image.open(bg_path).convert("RGBA")
 
 
