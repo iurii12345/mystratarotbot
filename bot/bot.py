@@ -240,69 +240,47 @@ async def process_back_to_menu(callback: CallbackQuery):
     )
     await callback.answer()
 
+def format_card_message(
+    cards: List[Dict[str, Any]],
+    positions: List[str],
+    is_reversed_list: List[bool],
+    title: str
+) -> str:
+    """
+    Форматирование сообщения для раскладов.
+    - cards: список карт
+    - positions: список позиций (например, ["Прошлое", "Настоящее", "Будущее"])
+    - is_reversed_list: список True/False для каждой карты
+    - title: заголовок расклада
+    """
+    text = f"**{title}**\n\n"
+    
+    for card, position, is_reversed in zip(cards, positions, is_reversed_list):
+        text += f"**{position}:** {card.get('name', 'Неизвестная карта')}\n"
+        if is_reversed:
+            text += f"🔄 {card.get('rdesc', 'Описание отсутствует')}\n\n"
+        else:
+            text += f"⬆️ {card.get('desc', 'Описание отсутствует')}\n\n"
+    
+    return text
+
 async def send_single_card(message: Message):
-    """Отправка одной случайной карты с изображением и подписью"""
-    await message.answer("Тасую карты...")
-
-    # Сохраняем запрос пользователя
+    """Отправка одной случайной карты"""
+    await message.answer("🔮 Тасую карты...")
     await save_user_request(message.from_user.id, "Запрос одной карты")
-
+    
     card = await tarot_api.get_random_card()
     if not card:
-        await message.answer(
-            "😔 Извините, сейчас карты недоступны. Попробуйте позже.",
-            reply_markup=get_main_keyboard()
-        )
+        await message.answer("😔 Карты недоступны.", reply_markup=get_main_keyboard())
         return
-
-    # Случайно определяем, перевернута ли карта
+    
     is_reversed = random.choice([True, False])
-
-    # Формируем текст с описанием карты
-    text = format_card_message(card, is_reversed)
-
-    # Генерируем изображение карты поверх фона
+    text = format_card_message([card], ["Ваша карта"], [is_reversed], "Одна карта")
+    
     image_file = generate_single_card_image(card, is_reversed)
-
     if image_file:
-        # Отправляем изображение с подписью и кнопкой
         await message.answer_photo(photo=image_file, caption=text)
     else:
-        # Если генерация изображения не удалась, просто отправляем текст
-        await message.answer(text)
-
-async def send_daily_spread(message: Message):
-    """Расклад на день (3 карты)"""
-    await message.answer("🌅 Создаю расклад на день...")
-    
-    await save_user_request(message.from_user.id, "Расклад на день")
-    
-    cards = await tarot_api.get_cards()
-    if not cards or len(cards) < 3:
-        await message.answer(
-            "😔 Недостаточно карт для расклада. Попробуйте позже.",
-            reply_markup=get_main_keyboard()
-        )
-        return
-    
-    selected_cards = random.sample(cards, 3)
-    positions = ["1. Утро", "2. День", "3. Вечер"]
-
-    # Определяем положение каждой карты
-    is_reversed_list = [random.choice([True, False]) for _ in range(3)]
-    
-    text = "🌅 Расклад на день\n\n"
-    for card, position, is_reversed in zip(selected_cards, positions, is_reversed_list):
-        text += f"{position}:\n"
-        text += f"{'🔄 ' if is_reversed else ''}{card.get('name', 'Неизвестная карта')}\n"
-        text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
-
-    image_file = generate_three_card_image(selected_cards, is_reversed_list)
-    if image_file:
-        # Отправляем изображение с подписью и кнопкой
-        await message.answer_photo(photo=image_file, caption=text)
-    else:
-        # Если генерация изображения не удалась, просто отправляем текст
         await message.answer(text)
 
 async def send_love_spread(message: Message):
