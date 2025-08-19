@@ -294,7 +294,7 @@ async def send_single_card(message: Message):
     await message.answer(text, parse_mode="Markdown", reply_markup=back_keyboard)
 
     # Отправляем сгенерированное изображение
-    image_file = generate_single_card_image(card)
+    image_file = generate_single_card_image(card, is_reversed)
     if image_file:
         await message.answer_photo(photo=image_file)
 
