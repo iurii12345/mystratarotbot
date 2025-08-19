@@ -351,7 +351,7 @@ async def send_love_spread(message: Message):
     positions = ["Ваши чувства", "Чувства партнера"]
 
     # Определяем положение каждой карты
-    is_reversed_list = [random.choice([True, False]) for _ in range(3)]
+    is_reversed_list = [random.choice([True, False]) for _ in range(2)]
     
     text = "💕 **Расклад на любовь**\n\n"
     
