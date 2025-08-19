@@ -8,6 +8,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.types import BufferedInputFile
 from PIL import Image, ImageDraw, ImageFont
 import os
 from dotenv import load_dotenv
@@ -249,8 +250,12 @@ async def cmd_picture(message: Message):
     img.save(bio, format="PNG")
     bio.seek(0)
 
-    # Отправляем как фото
-    await message.answer_photo(bio)
+    # Оборачиваем в BufferedInputFile
+    input_file = BufferedInputFile(bio.read(), filename="image.png")
+
+    # Отправляем
+    await message.answer_photo(input_file)
+
 
 @dp.callback_query(lambda c: c.data == "single_card")
 async def process_single_card(callback: CallbackQuery):
