@@ -23,10 +23,17 @@ def generate_single_card_image(card: Dict[Any, Any], is_reversed: bool = False) 
     try:
         background = _load_background()
 
-        # Загружаем изображение карты
-        card_image_path = card.get("image")
-        if not card_image_path:
+        # Получаем путь к изображению карты
+        card_url = card.get("image")
+        if not card_url:
             raise ValueError("У карты нет пути к изображению")
+
+        # Преобразуем URL в локальный путь
+        # Например: 'http://103.71.20.245/media/cards/minor_arcana_pentacles_ace.png'
+        # -> '/var/www/mystratarotbot/web/media/cards/minor_arcana_pentacles_ace.png'
+        project_root = Path("/var/www/mystratarotbot/web/media")
+        relative_path = Path(card_url).parts[-2:]  # берем последние 2 части пути "cards/имя_файла.png"
+        card_image_path = project_root.joinpath(*relative_path)
 
         card_image = Image.open(card_image_path).convert("RGBA")
 
