@@ -271,65 +271,65 @@ async def send_single_card(message: Message):
     else:
         await message.answer(text)
 
+async def send_daily_spread(message: Message):
+    """Расклад на день (3 карты)"""
+    await message.answer("🌅 Создаю расклад на день...")
+    await save_user_request(message.from_user.id, "Расклад на день")
+    
+    cards = await tarot_api.get_cards()
+    if not cards or len(cards) < 3:
+        await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
+        return
+    
+    selected_cards = random.sample(cards, 3)
+    positions = ["Утро", "День", "Вечер"]
+    is_reversed_list = [random.choice([True, False]) for _ in range(3)]
+    
+    text = format_card_message(selected_cards, positions, is_reversed_list, "Расклад на день")
+    
+    image_file = generate_three_card_image(selected_cards, is_reversed_list)
+    if image_file:
+        await message.answer_photo(photo=image_file, caption=text)
+    else:
+        await message.answer(text)
+
 async def send_love_spread(message: Message):
     """Расклад на любовь (2 карты)"""
-    await message.answer("💕 Создаю расклад на любовь...")
-    
+    await message.answer("❤️ Создаю расклад на любовь...")
     await save_user_request(message.from_user.id, "Расклад на любовь")
     
     cards = await tarot_api.get_cards()
     if not cards or len(cards) < 2:
-        await message.answer(
-            "😔 Недостаточно карт для расклада. Попробуйте позже.",
-            reply_markup=get_main_keyboard()
-        )
+        await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
         return
     
     selected_cards = random.sample(cards, 2)
-    positions = ["1. Ваши чувства", "2. Чувства партнера"]
-
-    # Определяем положение каждой карты
+    positions = ["Вы", "Ваш партнер/отношения"]
     is_reversed_list = [random.choice([True, False]) for _ in range(2)]
     
-    text = "💕 Расклад на любовь\n\n" 
-    for card, position, is_reversed in zip(selected_cards, positions, is_reversed_list):
-        text += f"{position}:\n"
-        text += f"{'🔄 ' if is_reversed else ''}{card.get('name', 'Неизвестная карта')}\n"
-        text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
-
+    text = format_card_message(selected_cards, positions, is_reversed_list, "Расклад на любовь")
+    
     image_file = generate_two_card_image(selected_cards, is_reversed_list)
     if image_file:
-        # Отправляем изображение с подписью и кнопкой
         await message.answer_photo(photo=image_file, caption=text)
     else:
-        # Если генерация изображения не удалась, просто отправляем текст
         await message.answer(text)
 
 async def send_work_spread(message: Message):
     """Расклад на работу (3 карты)"""
     await message.answer("💼 Создаю расклад на работу...")
-    
     await save_user_request(message.from_user.id, "Расклад на работу")
     
     cards = await tarot_api.get_cards()
     if not cards or len(cards) < 3:
-        await message.answer(
-            "😔 Недостаточно карт для расклада. Попробуйте позже.",
-            reply_markup=get_main_keyboard()
-        )
+        await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
         return
     
     selected_cards = random.sample(cards, 3)
-    positions = ["1. Текущая ситуация", "2. Препятствия", "3. Решение"]
-
-    # Определяем положение каждой карты
+    positions = ["Текущая ситуация", "Препятствия", "Решение"]
     is_reversed_list = [random.choice([True, False]) for _ in range(3)]
     
-    text = "💼 Расклад на работу\n\n"
-    for card, position, is_reversed in zip(selected_cards, positions, is_reversed_list):
-        text += f"{position}:\n"
-        text += f"{'🔄 ' if is_reversed else ''}{card.get('name', 'Неизвестная карта')}\n"
-        text += f"{card.get('rdesc' if is_reversed else 'desc', 'Описание отсутствует')}\n\n"
+    text = format_card_message(selected_cards, positions, is_reversed_list, "Расклад на работу")
     
     image_file = generate_three_card_image(selected_cards, is_reversed_list)
     if image_file:
