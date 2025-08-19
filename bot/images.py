@@ -118,7 +118,7 @@ def generate_two_card_image(cards: list[Dict[Any, Any]], is_reversed_list: list[
             raise ValueError("Нужно ровно 2 карты и 2 значения для переворота")
 
         background = _load_background()
-        max_width, max_height = 900, 1124  # масштабируем карты чуть шире
+        max_width, max_height = 492, 1124  # масштабируем карты чуть шире
 
         card_images = []
         for card, is_reversed in zip(cards, is_reversed_list):
