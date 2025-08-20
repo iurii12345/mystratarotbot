@@ -20,6 +20,14 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
         ]
     )
 
+def get_question_keyboard() -> InlineKeyboardMarkup:
+    """Клавиатура для ввода вопроса"""
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="⏩ Пропустить ввод вопроса", callback_data="skip_question")]
+        ]
+    )
+
 def get_interpret_keyboard() -> InlineKeyboardMarkup:
     """Клавиатура для толкования расклада"""
     return InlineKeyboardMarkup(

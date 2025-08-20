@@ -2,23 +2,26 @@ import random
 import logging
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
+from aiogram.fsm.context import FSMContext
 
 # Абсолютные импорты
 from api_client import tarot_api_instance, rate_limiter_instance
-from keyboards import get_main_keyboard, get_interpret_keyboard, get_back_to_menu_keyboard
+from keyboards import get_main_keyboard, get_question_keyboard, get_interpret_keyboard, get_back_to_menu_keyboard
 from utils import format_card_message, validate_cards_count
 from images import generate_single_card_image, generate_three_card_image, generate_two_card_image, generate_celtic_cross_image
+from handlers.states import SpreadStates  # Импортируем состояния
 
 router = Router()
 logger = logging.getLogger(__name__)
 
-# Добавляем хранилище для временного сохранения раскладов
+# Хранилище для временного сохранения раскладов
 user_spreads = {}
+user_questions = {}  # Для хранения вопросов пользователей
 
 @router.callback_query(F.data == "single_card")
-async def process_single_card(callback: CallbackQuery):
-    """Обработчик получения одной карты"""
-    await send_single_card(callback.message)
+async def process_single_card(callback: CallbackQuery, state: FSMContext):
+    """Обработчик получения одной карты - запрашиваем вопрос"""
+    await ask_for_question(callback, state, "single_card")
     await callback.answer()
 
 @router.callback_query(F.data == "daily_spread")
@@ -44,6 +47,81 @@ async def process_celtic_cross_spread(callback: CallbackQuery):
     """Обработчик расклада Кельтский крест"""
     await send_celtic_cross_spread(callback.message)
     await callback.answer()
+
+@router.callback_query(F.data == "skip_question")
+async def process_skip_question(callback: CallbackQuery, state: FSMContext):
+    """Обработчик пропуска вопроса"""
+    data = await state.get_data()
+    spread_type = data.get('spread_type')
+    
+    # Сохраняем, что вопрос пропущен
+    user_questions[callback.from_user.id] = None
+    
+    # Сразу создаем расклад
+    if spread_type == "single_card":
+        await send_single_card(callback.message)
+    elif spread_type == "daily_spread":
+        await send_daily_spread(callback.message)
+    elif spread_type == "love_spread":
+        await send_love_spread(callback.message)
+    elif spread_type == "work_spread":
+        await send_work_spread(callback.message)
+    elif spread_type == "celtic_cross_spread":
+        await send_celtic_cross_spread(callback.message)
+    
+    await state.clear()
+    await callback.answer()
+
+@router.message(SpreadStates.waiting_for_question)
+async def process_user_question(message: Message, state: FSMContext):
+    """Обработка вопроса пользователя"""
+    data = await state.get_data()
+    spread_type = data.get('spread_type')
+    question = message.text
+    
+    # Сохраняем вопрос
+    user_questions[message.from_user.id] = question
+    
+    # Создаем расклад
+    if spread_type == "single_card":
+        await send_single_card(message, question)
+    elif spread_type == "daily_spread":
+        await send_daily_spread(message, question)
+    elif spread_type == "love_spread":
+        await send_love_spread(message, question)
+    elif spread_type == "work_spread":
+        await send_work_spread(message, question)
+    elif spread_type == "celtic_cross_spread":
+        await send_celtic_cross_spread(message, question)
+    
+    await state.clear()
+
+async def ask_for_question(callback: CallbackQuery, state: FSMContext, spread_type: str):
+    """Запрос вопроса у пользователя"""
+    spread_names = {
+        "single_card": "одну карту",
+        "daily_spread": "расклад на день",
+        "love_spread": "расклад на любовь",
+        "work_spread": "расклад на работу",
+        "celtic_cross_spread": "Кельтский крест"
+    }
+    
+    await state.update_data(spread_type=spread_type)
+    await state.set_state(SpreadStates.waiting_for_question)
+    
+    message_text = (
+        f"🔮 Вы выбрали {spread_names[spread_type]}\n\n"
+        "💭 *Задайте вопрос, который вас волнует:*\n"
+        "Например: 'Что меня ждет в отношениях?', 'Как сложится мой день?'\n\n"
+        "Или просто опишите ситуацию, для которой нужен расклад.\n"
+        "Чем конкретнее вопрос, тем точнее будет ответ!"
+    )
+    
+    await callback.message.answer(
+        message_text,
+        reply_markup=get_question_keyboard(),
+        parse_mode="Markdown"
+    )
 
 @router.callback_query(F.data == "help")
 async def process_help(callback: CallbackQuery):
@@ -125,10 +203,15 @@ async def interpret_single_card(card, is_reversed):
     
     return interpretation
 
-async def send_single_card(message: Message):
+async def send_single_card(message: Message, question: str = None):
     try:
         progress_msg = await message.answer("🔮 Тасую карты...")
-        await tarot_api_instance.save_user_request(message.from_user.id, "Запрос одной карты")
+        
+        # Сохраняем запрос с вопросом
+        request_text = "Запрос одной карты"
+        if question:
+            request_text += f": {question}"
+        await tarot_api_instance.save_user_request(message.from_user.id, request_text)
         
         card = await tarot_api_instance.get_random_card()
         if not card:
@@ -137,7 +220,13 @@ async def send_single_card(message: Message):
             return
         
         is_reversed = random.choice([True, False])
-        text = format_card_message([card], ["Ваша карта"], [is_reversed], "🎴 Одна карта")
+        
+        # Формируем текст с вопросом, если есть
+        title = "🎴 Одна карта"
+        if question:
+            title += f"\n💭 Вопрос: {question}"
+        
+        text = format_card_message([card], ["Ваша карта"], [is_reversed], title)
         
         image_file = generate_single_card_image(card, is_reversed)
         
@@ -148,7 +237,8 @@ async def send_single_card(message: Message):
             'type': 'single_card',
             'cards': [card],
             'positions': ["Ваша карта"],
-            'is_reversed_list': [is_reversed]
+            'is_reversed_list': [is_reversed],
+            'question': question
         }
         
         if image_file:
