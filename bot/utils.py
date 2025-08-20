@@ -1,10 +1,9 @@
 import logging
 from typing import List, Dict, Any, Optional
-from .api_client import TarotAPI
 
 logger = logging.getLogger(__name__)
 
-def _validate_cards_count(cards: Optional[list], required: int) -> bool:
+def validate_cards_count(cards: Optional[list], required: int) -> bool:
     if not cards:
         return False
     if len(cards) < required:
@@ -28,7 +27,3 @@ def format_card_message(
             text += f"⬆️ {card.get('desc', 'Описание отсутствует')}\n\n"
     
     return text
-
-async def validate_cards(api: TarotAPI, required: int) -> Optional[list]:
-    cards = await api.get_cards()
-    return cards if _validate_cards_count(cards, required) else None
