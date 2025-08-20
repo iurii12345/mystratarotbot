@@ -1,8 +1,12 @@
 import asyncio
+import random
 import logging
 import httpx
 from typing import Optional, List, Dict, Any
-from .config import config
+from collections import defaultdict
+
+# Абсолютный импорт
+from config import config
 
 logger = logging.getLogger(__name__)
 
