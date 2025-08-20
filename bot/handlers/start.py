@@ -1,8 +1,10 @@
-from aiogram import Router, F
+from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Command
-from ..keyboards import get_main_keyboard
-from ..api_client import tarot_api
+
+# Абсолютные импорты
+from api_client import tarot_api_instance
+from keyboards import get_main_keyboard
 
 router = Router()
 
@@ -10,7 +12,7 @@ router = Router()
 async def start_command(message: Message):
     user = message.from_user
     
-    await tarot_api.register_user(
+    await tarot_api_instance.register_user(
         user_id=user.id,
         username=user.username,
         first_name=user.first_name,
