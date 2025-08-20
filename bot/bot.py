@@ -1,9 +1,14 @@
 import logging
+import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
+
+# Абсолютные импорты
 from config import config
 from api_client import tarot_api
-from handlers import start_router, spreads_router, common_router
+from handlers.start import router as start_router
+from handlers.spreads import router as spreads_router
+from handlers.common import router as common_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -37,7 +42,6 @@ async def main():
         await bot.session.close()
 
 if __name__ == "__main__":
-    import asyncio
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
