@@ -244,6 +244,11 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
     return keyboard
 
 
+async def _show_progress(message: Message, progress_text: str):
+    """Показывает прогресс и возвращает сообщение"""
+    return await message.answer(progress_text)
+
+
 @dp.message(Command("start"))
 async def start_command(message: Message):
     """Обработчик команды /start"""
@@ -324,26 +329,15 @@ async def process_help(callback: CallbackQuery):
     await callback.answer()
 
 
-async def send_with_progress(message: Message, progress_text: str, action: callable):
-    """Отправка сообщения с прогрессом"""
-    progress_msg = await message.answer(progress_text)
-    try:
-        result = await action()
-        await progress_msg.delete()
-        return result
-    except Exception as e:
-        await progress_msg.delete()
-        raise e
-
-
 async def send_single_card(message: Message):
     """Отправка одной случайной карты"""
     try:
-        await send_with_progress(message, "🔮 Тасую карты...", lambda: None)
+        progress_msg = await message.answer("🔮 Тасую карты...")
         await save_user_request(message.from_user.id, "Запрос одной карты")
         
         card = await tarot_api.get_random_card()
         if not card:
+            await progress_msg.delete()
             await message.answer("😔 Карты недоступны.", reply_markup=get_main_keyboard())
             return
         
@@ -351,6 +345,9 @@ async def send_single_card(message: Message):
         text = format_card_message([card], ["Ваша карта"], [is_reversed], "🎴 Одна карта")
         
         image_file = generate_single_card_image(card, is_reversed)
+        
+        await progress_msg.delete()
+        
         if image_file:
             await message.answer_photo(photo=image_file, caption=text, parse_mode="Markdown")
         else:
@@ -364,11 +361,12 @@ async def send_single_card(message: Message):
 async def send_daily_spread(message: Message):
     """Расклад на день (3 карты)"""
     try:
-        await send_with_progress(message, "🌅 Создаю расклад на день...", lambda: None)
+        progress_msg = await message.answer("🌅 Создаю расклад на день...")
         await save_user_request(message.from_user.id, "Расклад на день")
         
         cards = await tarot_api.get_cards()
         if not _validate_cards_count(cards, 3):
+            await progress_msg.delete()
             await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
             return
         
@@ -379,6 +377,9 @@ async def send_daily_spread(message: Message):
         text = format_card_message(selected_cards, positions, is_reversed_list, "🌅 Расклад на день")
         
         image_file = generate_three_card_image(selected_cards, is_reversed_list)
+        
+        await progress_msg.delete()
+        
         if image_file:
             await message.answer_photo(photo=image_file, caption=text, parse_mode="Markdown")
         else:
@@ -392,11 +393,12 @@ async def send_daily_spread(message: Message):
 async def send_love_spread(message: Message):
     """Расклад на любовь (2 карты)"""
     try:
-        await send_with_progress(message, "❤️ Создаю расклад на любовь...", lambda: None)
+        progress_msg = await message.answer("❤️ Создаю расклад на любовь...")
         await save_user_request(message.from_user.id, "Расклад на любовь")
         
         cards = await tarot_api.get_cards()
         if not _validate_cards_count(cards, 2):
+            await progress_msg.delete()
             await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
             return
         
@@ -407,6 +409,9 @@ async def send_love_spread(message: Message):
         text = format_card_message(selected_cards, positions, is_reversed_list, "💕 Расклад на любовь")
         
         image_file = generate_two_card_image(selected_cards, is_reversed_list)
+        
+        await progress_msg.delete()
+        
         if image_file:
             await message.answer_photo(photo=image_file, caption=text, parse_mode="Markdown")
         else:
@@ -420,11 +425,12 @@ async def send_love_spread(message: Message):
 async def send_work_spread(message: Message):
     """Расклад на работу (3 карты)"""
     try:
-        await send_with_progress(message, "💼 Создаю расклад на работу...", lambda: None)
+        progress_msg = await message.answer("💼 Создаю расклад на работу...")
         await save_user_request(message.from_user.id, "Расклад на работу")
         
         cards = await tarot_api.get_cards()
         if not _validate_cards_count(cards, 3):
+            await progress_msg.delete()
             await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
             return
         
@@ -435,6 +441,9 @@ async def send_work_spread(message: Message):
         text = format_card_message(selected_cards, positions, is_reversed_list, "💼 Расклад на работу")
         
         image_file = generate_three_card_image(selected_cards, is_reversed_list)
+        
+        await progress_msg.delete()
+        
         if image_file:
             await message.answer_photo(photo=image_file, caption=text, parse_mode="Markdown")
         else:
@@ -453,11 +462,12 @@ async def send_celtic_cross_spread(message: Message):
             await message.answer("⏳ Пожалуйста, подождите перед следующим сложным раскладом")
             return
         
-        await send_with_progress(message, "🔮 Создаю расклад Кельтский крест...", lambda: None)
+        progress_msg = await message.answer("🔮 Создаю расклад Кельтский крест...")
         await save_user_request(message.from_user.id, "Расклад Кельтский крест")
         
         cards = await tarot_api.get_cards()
         if not _validate_cards_count(cards, 10):
+            await progress_msg.delete()
             await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
             return
         
@@ -479,6 +489,9 @@ async def send_celtic_cross_spread(message: Message):
         text = format_card_message(selected_cards, positions, is_reversed_list, "🏰 Расклад Кельтский крест")
         
         image_file = generate_celtic_cross_image(selected_cards, is_reversed_list)
+        
+        await progress_msg.delete()
+        
         if image_file:
             await message.answer_photo(
                 photo=image_file, 
