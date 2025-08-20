@@ -195,9 +195,18 @@ async def send_daily_spread(message: Message):
         await progress_msg.delete()
         
         if image_file:
-            await message.answer_photo(photo=image_file, caption=text, parse_mode="Markdown")
+            await message.answer_photo(
+                photo=image_file, 
+                caption=text, 
+                parse_mode="Markdown",
+                reply_markup=get_interpret_keyboard()
+            )
         else:
-            await message.answer(text, parse_mode="Markdown")
+            await message.answer(
+                text, 
+                parse_mode="Markdown",
+                reply_markup=get_interpret_keyboard()
+            )
             
     except Exception as e:
         logger.error(f"Ошибка в send_daily_spread: {e}", exc_info=True)
@@ -226,9 +235,18 @@ async def send_love_spread(message: Message):
         await progress_msg.delete()
         
         if image_file:
-            await message.answer_photo(photo=image_file, caption=text, parse_mode="Markdown")
+            await message.answer_photo(
+                photo=image_file, 
+                caption=text, 
+                parse_mode="Markdown",
+                reply_markup=get_interpret_keyboard()
+            )
         else:
-            await message.answer(text, parse_mode="Markdown")
+            await message.answer(
+                text, 
+                parse_mode="Markdown",
+                reply_markup=get_interpret_keyboard()
+            )
             
     except Exception as e:
         logger.error(f"Ошибка в send_love_spread: {e}", exc_info=True)
