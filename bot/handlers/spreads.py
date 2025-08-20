@@ -4,7 +4,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 
 # Абсолютные импорты
-from api_client import tarot_api, rate_limiter
+from api_client import tarot_api_instance, rate_limiter_instance
 from keyboards import get_main_keyboard
 from utils import format_card_message
 from images import generate_single_card_image, generate_three_card_image, generate_two_card_image, generate_celtic_cross_image
