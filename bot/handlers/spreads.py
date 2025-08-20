@@ -53,9 +53,9 @@ async def send_single_card(message: Message):
     """Отправка одной случайной карты"""
     try:
         progress_msg = await message.answer("🔮 Тасую карты...")
-        await tarot_api.save_user_request(message.from_user.id, "Запрос одной карты")
+        await tarot_api_instance.save_user_request(message.from_user.id, "Запрос одной карты")
         
-        card = await tarot_api.get_random_card()
+        card = await tarot_api_instance.get_random_card()
         if not card:
             await progress_msg.delete()
             await message.answer("😔 Карты недоступны.", reply_markup=get_main_keyboard())
@@ -81,9 +81,9 @@ async def send_daily_spread(message: Message):
     """Расклад на день (3 карты)"""
     try:
         progress_msg = await message.answer("🌅 Создаю расклад на день...")
-        await tarot_api.save_user_request(message.from_user.id, "Расклад на день")
+        await tarot_api_instance.save_user_request(message.from_user.id, "Расклад на день")
         
-        cards = await tarot_api.get_cards()
+        cards = await tarot_api_instance.get_cards()
         if not cards or len(cards) < 3:
             await progress_msg.delete()
             await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
@@ -112,9 +112,9 @@ async def send_love_spread(message: Message):
     """Расклад на любовь (2 карты)"""
     try:
         progress_msg = await message.answer("❤️ Создаю расклад на любовь...")
-        await tarot_api.save_user_request(message.from_user.id, "Расклад на любовь")
+        await tarot_api_instance.save_user_request(message.from_user.id, "Расклад на любовь")
         
-        cards = await tarot_api.get_cards()
+        cards = await tarot_api_instance.get_cards()
         if not cards or len(cards) < 2:
             await progress_msg.delete()
             await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
@@ -143,9 +143,9 @@ async def send_work_spread(message: Message):
     """Расклад на работу (3 карты)"""
     try:
         progress_msg = await message.answer("💼 Создаю расклад на работу...")
-        await tarot_api.save_user_request(message.from_user.id, "Расклад на работу")
+        await tarot_api_instance.save_user_request(message.from_user.id, "Расклад на работу")
         
-        cards = await tarot_api.get_cards()
+        cards = await tarot_api_instance.get_cards()
         if not cards or len(cards) < 3:
             await progress_msg.delete()
             await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
@@ -174,14 +174,14 @@ async def send_celtic_cross_spread(message: Message):
     """Расклад Кельтский крест"""
     try:
         # Проверка лимита запросов
-        if not rate_limiter.can_make_request(message.from_user.id, limit=3, period=3600):
+        if not rate_limiter_instance.can_make_request(message.from_user.id, limit=3, period=3600):
             await message.answer("⏳ Пожалуйста, подождите перед следующим сложным раскладом")
             return
         
         progress_msg = await message.answer("🔮 Создаю расклад Кельтский крест...")
-        await tarot_api.save_user_request(message.from_user.id, "Расклад Кельтский крест")
+        await tarot_api_instance.save_user_request(message.from_user.id, "Расклад Кельтский крест")
         
-        cards = await tarot_api.get_cards()
+        cards = await tarot_api_instance.get_cards()
         if not cards or len(cards) < 10:
             await progress_msg.delete()
             await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
