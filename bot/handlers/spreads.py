@@ -257,9 +257,18 @@ async def send_work_spread(message: Message):
         await progress_msg.delete()
         
         if image_file:
-            await message.answer_photo(photo=image_file, caption=text, parse_mode="Markdown")
+            await message.answer_photo(
+                photo=image_file, 
+                caption=text, 
+                parse_mode="Markdown",
+                reply_markup=get_interpret_keyboard()
+            )
         else:
-            await message.answer(text, parse_mode="Markdown")
+            await message.answer(
+                text, 
+                parse_mode="Markdown",
+                reply_markup=get_interpret_keyboard()
+            )
             
     except Exception as e:
         logger.error(f"Ошибка в send_work_spread: {e}", exc_info=True)
@@ -308,18 +317,18 @@ async def send_celtic_cross_spread(message: Message):
                 photo=image_file, 
                 caption=text, 
                 parse_mode="Markdown",
-                reply_markup=get_main_keyboard()
+                reply_markup=get_interpret_keyboard()
             )
         else:
             await message.answer(
                 text, 
                 parse_mode="Markdown",
-                reply_markup=get_main_keyboard()
+                reply_markup=get_interpret_keyboard()
             )
             
     except Exception as e:
         logger.error(f"Ошибка в send_celtic_cross_spread: {e}", exc_info=True)
         await message.answer(
             "❌ Произошла ошибка при создании расклада",
-            reply_markup=get_main_keyboard()
+            reply_markup=get_back_to_menu_keyboard()
         )
