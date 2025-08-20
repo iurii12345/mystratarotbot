@@ -2,10 +2,12 @@ import random
 import logging
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
-from ..keyboards import get_main_keyboard
-from ..api_client import tarot_api, rate_limiter
-from ..utils import format_card_message
-from ..images import generate_single_card_image, generate_three_card_image, generate_two_card_image, generate_celtic_cross_image
+
+# Абсолютные импорты
+from api_client import tarot_api, rate_limiter
+from keyboards import get_main_keyboard
+from utils import format_card_message
+from images import generate_single_card_image, generate_three_card_image, generate_two_card_image, generate_celtic_cross_image
 
 router = Router()
 logger = logging.getLogger(__name__)
