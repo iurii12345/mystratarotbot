@@ -79,7 +79,7 @@ async def process_back_to_menu(callback: CallbackQuery):
     try:
         # Всегда отправляем новое сообщение - это самый надежный способ
         await callback.message.answer(
-            "🌟 Главное меню\n\nВыберите действие:",
+            "Главное меню\n\nВыберите действие:",
             reply_markup=get_main_keyboard(),
             parse_mode="Markdown"
         )
@@ -206,7 +206,7 @@ async def send_daily_spread(message: Message):
 async def send_love_spread(message: Message):
     """Расклад на любовь (2 карты)"""
     try:
-        progress_msg = await message.answer("❤️ Создаю расклад на любовь...")
+        progress_msg = await message.answer("💕 Создаю расклад на любовь...")
         await tarot_api_instance.save_user_request(message.from_user.id, "Расклад на любовь")
         
         cards = await tarot_api_instance.get_cards()
