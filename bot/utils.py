@@ -21,10 +21,10 @@ def format_card_message(
     
     for card, position, is_reversed in zip(cards, positions, is_reversed_list):    
         if is_reversed:
-            text += f"**{position}:** 🔄 {card.get('name', 'Неизвестная карта')}\n"
+            text += f"**{position}:** \n🔄 {card.get('name', 'Неизвестная карта')}\n"
             text += f"{card.get('rdesc', 'Описание отсутствует')}\n\n"
         else:
-            text += f"**{position}:** ⬆️ {card.get('name', 'Неизвестная карта')}\n"
+            text += f"**{position}:** \n⬆️ {card.get('name', 'Неизвестная карта')}\n"
             text += f"{card.get('desc', 'Описание отсутствует')}\n\n"
     
     return text
