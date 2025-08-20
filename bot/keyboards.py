@@ -25,8 +25,8 @@ def get_interpret_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(text="📖 Толковать расклад", callback_data="interpret_spread"),
-                InlineKeyboardButton(text="↩️ Вернуться в меню", callback_data="back_to_menu")
+                InlineKeyboardButton(text="📖 Толковать", callback_data="interpret_spread"),
+                InlineKeyboardButton(text="↩️ В меню", callback_data="back_to_menu")
             ]
         ]
     )
@@ -35,6 +35,6 @@ def get_back_to_menu_keyboard() -> InlineKeyboardMarkup:
     """Простая кнопка возврата в меню"""
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="↩️ Вернуться в меню", callback_data="back_to_menu")]
+            [InlineKeyboardButton(text="↩️ В меню", callback_data="back_to_menu")]
         ]
     )
