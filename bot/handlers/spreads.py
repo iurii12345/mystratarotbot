@@ -76,11 +76,25 @@ async def process_interpret_spread(callback: CallbackQuery):
 @router.callback_query(F.data == "back_to_menu")
 async def process_back_to_menu(callback: CallbackQuery):
     """Возврат в главное меню"""
-    await callback.message.edit_text(
-        "🌟 Главное меню\n\nВыберите действие:",
-        reply_markup=get_main_keyboard()
-    )
-    await callback.answer()
+    try:
+        # Всегда отправляем новое сообщение - это самый надежный способ
+        await callback.message.answer(
+            "🌟 Главное меню\n\nВыберите действие:",
+            reply_markup=get_main_keyboard(),
+            parse_mode="Markdown"
+        )
+        
+        # Пытаемся удалить инлайн-клавиатуру из предыдущего сообщения
+        try:
+            await callback.message.edit_reply_markup(reply_markup=None)
+        except:
+            pass  # Не критично, если не получится
+        
+    except Exception as e:
+        logger.error(f"Ошибка при возврате в меню: {e}")
+        await callback.answer("❌ Произошла ошибка")
+    finally:
+        await callback.answer()
 
 async def generate_interpretation(spread_type, cards, positions, is_reversed_list):
     """Генерация толкования расклада"""
