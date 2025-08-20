@@ -5,7 +5,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 # Абсолютные импорты
 from config import config
-from api_client import tarot_api
+from api_client import tarot_api_instance, rate_limiter_instance
 from handlers.start import router as start_router
 from handlers.spreads import router as spreads_router
 from handlers.common import router as common_router
@@ -29,7 +29,7 @@ async def main():
     
     try:
         # Проверяем API
-        cards = await tarot_api.get_cards()
+        cards = await tarot_api_instance.get_cards()
         logger.info(f"✅ API доступно, загружено {len(cards) if cards else 0} карт")
         
         await dp.start_polling(bot)
@@ -38,7 +38,7 @@ async def main():
         logger.error(f"❌ Критическая ошибка: {e}", exc_info=True)
         raise
     finally:
-        await tarot_api.close()
+        await tarot_api_instance.close()
         await bot.session.close()
 
 if __name__ == "__main__":
