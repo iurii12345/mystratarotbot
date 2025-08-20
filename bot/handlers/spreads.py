@@ -49,6 +49,65 @@ async def process_help(callback: CallbackQuery):
     await help_command(callback.message)
     await callback.answer()
 
+@router.callback_query(F.data == "interpret_spread")
+async def process_interpret_spread(callback: CallbackQuery):
+    """Обработчик толкования расклада"""
+    user_id = callback.from_user.id
+    spread_data = user_spreads.get(user_id)
+    
+    if not spread_data:
+        await callback.answer("❌ Расклад не найден")
+        return
+    
+    spread_type = spread_data.get('type')
+    cards = spread_data.get('cards')
+    positions = spread_data.get('positions')
+    is_reversed_list = spread_data.get('is_reversed_list')
+    
+    # Здесь можно добавить расширенное толкование
+    interpretation = await generate_interpretation(spread_type, cards, positions, is_reversed_list)
+    
+    await callback.message.answer(interpretation, parse_mode="Markdown")
+    await callback.answer()
+
+@router.callback_query(F.data == "back_to_menu")
+async def process_back_to_menu(callback: CallbackQuery):
+    """Возврат в главное меню"""
+    await callback.message.edit_text(
+        "🌟 Главное меню\n\nВыберите действие:",
+        reply_markup=get_main_keyboard()
+    )
+    await callback.answer()
+
+async def generate_interpretation(spread_type, cards, positions, is_reversed_list):
+    """Генерация толкования расклада"""
+    if spread_type == "single_card":
+        return await interpret_single_card(cards[0], is_reversed_list[0])
+    elif spread_type == "daily_spread":
+        return await interpret_daily_spread(cards, positions, is_reversed_list)
+    elif spread_type == "love_spread":
+        return await interpret_love_spread(cards, positions, is_reversed_list)
+    elif spread_type == "work_spread":
+        return await interpret_work_spread(cards, positions, is_reversed_list)
+    elif spread_type == "celtic_cross":
+        return await interpret_celtic_cross(cards, positions, is_reversed_list)
+    
+    return "🔮 Толкование этого расклада пока недоступно."
+
+async def interpret_single_card(card, is_reversed):
+    """Толкование одной карты"""
+    card_name = card.get('name', 'Неизвестная карта')
+    interpretation = f"📖 **Толкование карты {card_name}**\n\n"
+    
+    if is_reversed:
+        interpretation += f"🔄 **Перевернутое положение:**\n{card.get('rdesc', 'Описание отсутствует')}\n\n"
+        interpretation += f"💡 **Совет:** {card.get('radvice', 'Примите ситуацию как есть')}"
+    else:
+        interpretation += f"⬆️ **Прямое положение:**\n{card.get('desc', 'Описание отсутствует')}\n\n"
+        interpretation += f"💡 **Совет:** {card.get('advice', 'Доверьтесь своей интуиции')}"
+    
+    return interpretation
+
 async def send_single_card(message: Message):
     """Отправка одной случайной карты"""
     try:
