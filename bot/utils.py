@@ -19,11 +19,12 @@ def format_card_message(
 ) -> str:
     text = f"**{title}**\n\n"
     
-    for card, position, is_reversed in zip(cards, positions, is_reversed_list):
-        text += f"**{position}:** {card.get('name', 'Неизвестная карта')}\n"
+    for card, position, is_reversed in zip(cards, positions, is_reversed_list):    
         if is_reversed:
-            text += f"🔄 {card.get('rdesc', 'Описание отсутствует')}\n\n"
+            text += f"**{position}:** 🔄 {card.get('name', 'Неизвестная карта')}\n"
+            text += f"{card.get('rdesc', 'Описание отсутствует')}\n\n"
         else:
-            text += f"⬆️ {card.get('desc', 'Описание отсутствует')}\n\n"
+            text += f"**{position}:** ⬆️ {card.get('name', 'Неизвестная карта')}\n"
+            text += f"{card.get('desc', 'Описание отсутствует')}\n\n"
     
     return text

@@ -1,7 +1,5 @@
 from aiogram import Router
 from aiogram.types import Message
-
-# Абсолютные импорты
 from api_client import tarot_api_instance
 from keyboards import get_main_keyboard
 
