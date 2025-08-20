@@ -11,16 +11,12 @@ from config import config
 logger = logging.getLogger(__name__)
 
 class RateLimiter:
-    """Класс для ограничения частоты запросов"""
     def __init__(self):
-        self.user_requests = {}
+        self.user_requests = defaultdict(list)
     
     def can_make_request(self, user_id: int, limit: int = 10, period: int = 3600) -> bool:
         import time
         current_time = time.time()
-        
-        if user_id not in self.user_requests:
-            self.user_requests[user_id] = []
         
         # Удаляем старые запросы
         self.user_requests[user_id] = [
@@ -35,8 +31,6 @@ class RateLimiter:
         return True
 
 class TarotAPI:
-    """Класс для работы с API карт Таро"""
-    
     def __init__(self, base_url: str = config.API_BASE_URL, timeout: int = config.API_TIMEOUT):
         self.base_url = base_url
         self.timeout = timeout
@@ -113,3 +107,7 @@ class TarotAPI:
         except Exception as e:
             logger.error(f"Ошибка сохранения запроса {user_id}: {e}")
             return False
+
+# Создаем экземпляры здесь
+tarot_api_instance = TarotAPI()
+rate_limiter_instance = RateLimiter()
