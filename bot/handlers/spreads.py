@@ -5,12 +5,15 @@ from aiogram.types import Message, CallbackQuery
 
 # Абсолютные импорты
 from api_client import tarot_api_instance, rate_limiter_instance
-from keyboards import get_main_keyboard
-from utils import format_card_message
+from keyboards import get_main_keyboard, get_interpret_keyboard, get_back_to_menu_keyboard
+from utils import format_card_message, validate_cards_count
 from images import generate_single_card_image, generate_three_card_image, generate_two_card_image, generate_celtic_cross_image
 
 router = Router()
 logger = logging.getLogger(__name__)
+
+# Добавляем хранилище для временного сохранения раскладов
+user_spreads = {}
 
 @router.callback_query(F.data == "single_card")
 async def process_single_card(callback: CallbackQuery):
@@ -109,7 +112,6 @@ async def interpret_single_card(card, is_reversed):
     return interpretation
 
 async def send_single_card(message: Message):
-    """Отправка одной случайной карты"""
     try:
         progress_msg = await message.answer("🔮 Тасую карты...")
         await tarot_api_instance.save_user_request(message.from_user.id, "Запрос одной карты")
@@ -127,14 +129,34 @@ async def send_single_card(message: Message):
         
         await progress_msg.delete()
         
+        # Сохраняем расклад для возможного толкования
+        user_spreads[message.from_user.id] = {
+            'type': 'single_card',
+            'cards': [card],
+            'positions': ["Ваша карта"],
+            'is_reversed_list': [is_reversed]
+        }
+        
         if image_file:
-            await message.answer_photo(photo=image_file, caption=text, parse_mode="Markdown")
+            await message.answer_photo(
+                photo=image_file, 
+                caption=text, 
+                parse_mode="Markdown",
+                reply_markup=get_interpret_keyboard()
+            )
         else:
-            await message.answer(text, parse_mode="Markdown")
+            await message.answer(
+                text, 
+                parse_mode="Markdown",
+                reply_markup=get_interpret_keyboard()
+            )
             
     except Exception as e:
         logger.error(f"Ошибка в send_single_card: {e}", exc_info=True)
-        await message.answer("❌ Произошла ошибка при создании расклада")
+        await message.answer(
+            "❌ Произошла ошибка при создании расклада",
+            reply_markup=get_back_to_menu_keyboard()
+        )
 
 async def send_daily_spread(message: Message):
     """Расклад на день (3 карты)"""
