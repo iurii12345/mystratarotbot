@@ -398,7 +398,7 @@ async def send_daily_spread(message: Message):
             return
 
         selected_cards = random.sample(cards, 3)
-        positions = ["Утро", "День", "Вечер"]
+        positions = ["1. Утро", "2. День", "3. Вечер"]
         is_reversed_list = [random.choice([True, False]) for _ in range(3)]
 
         text = format_card_message(
@@ -443,7 +443,7 @@ async def send_love_spread(message: Message):
             return
 
         selected_cards = random.sample(cards, 2)
-        positions = ["Вы", "Ваш партнер/отношения"]
+        positions = ["1. Вы", "2. Ваш партнер/отношения"]
         is_reversed_list = [random.choice([True, False]) for _ in range(2)]
 
         text = format_card_message(
@@ -488,7 +488,7 @@ async def send_work_spread(message: Message):
             return
 
         selected_cards = random.sample(cards, 3)
-        positions = ["Текущая ситуация", "Препятствия", "Решение"]
+        positions = ["1. Текущая ситуация", "2. Препятствия", "3. Решение"]
         is_reversed_list = [random.choice([True, False]) for _ in range(3)]
 
         text = format_card_message(
