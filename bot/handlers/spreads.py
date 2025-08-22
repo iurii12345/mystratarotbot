@@ -1,15 +1,26 @@
-import random
 import logging
-from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+import random
+
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
 
 # Абсолютные импорты
-from api_client import tarot_api_instance, rate_limiter_instance
-from keyboards import get_main_keyboard, get_question_keyboard, get_interpret_keyboard, get_back_to_menu_keyboard
-from utils import format_card_message, validate_cards_count
-from images import generate_single_card_image, generate_three_card_image, generate_two_card_image, generate_celtic_cross_image
+from api_client import rate_limiter_instance, tarot_api_instance
 from handlers.states import SpreadStates  # Импортируем состояния
+from images import (
+    generate_celtic_cross_image,
+    generate_single_card_image,
+    generate_three_card_image,
+    generate_two_card_image,
+)
+from keyboards import (
+    get_back_to_menu_keyboard,
+    get_interpret_keyboard,
+    get_main_keyboard,
+    get_question_keyboard,
+)
+from utils import format_card_message, validate_cards_count
 
 router = Router()
 logger = logging.getLogger(__name__)
@@ -18,11 +29,13 @@ logger = logging.getLogger(__name__)
 user_spreads = {}
 user_questions = {}  # Для хранения вопросов пользователей
 
+
 @router.callback_query(F.data == "single_card")
 async def process_single_card(callback: CallbackQuery, state: FSMContext):
     """Обработчик получения одной карты - запрашиваем вопрос"""
     await ask_for_question(callback, state, "single_card")
     await callback.answer()
+
 
 @router.callback_query(F.data == "daily_spread")
 async def process_daily_spread(callback: CallbackQuery):
@@ -30,11 +43,13 @@ async def process_daily_spread(callback: CallbackQuery):
     await send_daily_spread(callback.message)
     await callback.answer()
 
+
 @router.callback_query(F.data == "love_spread")
 async def process_love_spread(callback: CallbackQuery):
     """Обработчик расклада на любовь"""
     await send_love_spread(callback.message)
     await callback.answer()
+
 
 @router.callback_query(F.data == "work_spread")
 async def process_work_spread(callback: CallbackQuery):
@@ -42,21 +57,23 @@ async def process_work_spread(callback: CallbackQuery):
     await send_work_spread(callback.message)
     await callback.answer()
 
+
 @router.callback_query(F.data == "celtic_cross_spread")
 async def process_celtic_cross_spread(callback: CallbackQuery):
     """Обработчик расклада Кельтский крест"""
     await send_celtic_cross_spread(callback.message)
     await callback.answer()
 
+
 @router.callback_query(F.data == "skip_question")
 async def process_skip_question(callback: CallbackQuery, state: FSMContext):
     """Обработчик пропуска вопроса"""
     data = await state.get_data()
-    spread_type = data.get('spread_type')
-    
+    spread_type = data.get("spread_type")
+
     # Сохраняем, что вопрос пропущен
     user_questions[callback.from_user.id] = None
-    
+
     # Сразу создаем расклад
     if spread_type == "single_card":
         await send_single_card(callback.message)
@@ -68,20 +85,21 @@ async def process_skip_question(callback: CallbackQuery, state: FSMContext):
         await send_work_spread(callback.message)
     elif spread_type == "celtic_cross_spread":
         await send_celtic_cross_spread(callback.message)
-    
+
     await state.clear()
     await callback.answer()
+
 
 @router.message(SpreadStates.waiting_for_question)
 async def process_user_question(message: Message, state: FSMContext):
     """Обработка вопроса пользователя"""
     data = await state.get_data()
-    spread_type = data.get('spread_type')
+    spread_type = data.get("spread_type")
     question = message.text
-    
+
     # Сохраняем вопрос
     user_questions[message.from_user.id] = question
-    
+
     # Создаем расклад
     if spread_type == "single_card":
         await send_single_card(message, question)
@@ -93,22 +111,25 @@ async def process_user_question(message: Message, state: FSMContext):
         await send_work_spread(message, question)
     elif spread_type == "celtic_cross_spread":
         await send_celtic_cross_spread(message, question)
-    
+
     await state.clear()
 
-async def ask_for_question(callback: CallbackQuery, state: FSMContext, spread_type: str):
+
+async def ask_for_question(
+    callback: CallbackQuery, state: FSMContext, spread_type: str
+):
     """Запрос вопроса у пользователя"""
     spread_names = {
         "single_card": "одну карту",
         "daily_spread": "расклад на день",
         "love_spread": "расклад на любовь",
         "work_spread": "расклад на работу",
-        "celtic_cross_spread": "Кельтский крест"
+        "celtic_cross_spread": "Кельтский крест",
     }
-    
+
     await state.update_data(spread_type=spread_type)
     await state.set_state(SpreadStates.waiting_for_question)
-    
+
     message_text = (
         f"🔮 Вы выбрали {spread_names[spread_type]}\n\n"
         "💭 *Задайте вопрос, который вас волнует:*\n"
@@ -116,40 +137,44 @@ async def ask_for_question(callback: CallbackQuery, state: FSMContext, spread_ty
         "Или просто опишите ситуацию, для которой нужен расклад.\n"
         "Чем конкретнее вопрос, тем точнее будет ответ!"
     )
-    
+
     await callback.message.answer(
-        message_text,
-        reply_markup=get_question_keyboard(),
-        parse_mode="Markdown"
+        message_text, reply_markup=get_question_keyboard(), parse_mode="Markdown"
     )
+
 
 @router.callback_query(F.data == "help")
 async def process_help(callback: CallbackQuery):
     """Обработчик помощи"""
     from .start import help_command
+
     await help_command(callback.message)
     await callback.answer()
+
 
 @router.callback_query(F.data == "interpret_spread")
 async def process_interpret_spread(callback: CallbackQuery):
     """Обработчик толкования расклада"""
     user_id = callback.from_user.id
     spread_data = user_spreads.get(user_id)
-    
+
     if not spread_data:
         await callback.answer("❌ Расклад не найден")
         return
-    
-    spread_type = spread_data.get('type')
-    cards = spread_data.get('cards')
-    positions = spread_data.get('positions')
-    is_reversed_list = spread_data.get('is_reversed_list')
-    
+
+    spread_type = spread_data.get("type")
+    cards = spread_data.get("cards")
+    positions = spread_data.get("positions")
+    is_reversed_list = spread_data.get("is_reversed_list")
+
     # Здесь можно добавить расширенное толкование
-    interpretation = await generate_interpretation(spread_type, cards, positions, is_reversed_list)
-    
+    interpretation = await generate_interpretation(
+        spread_type, cards, positions, is_reversed_list
+    )
+
     await callback.message.answer(interpretation, parse_mode="Markdown")
     await callback.answer()
+
 
 @router.callback_query(F.data == "back_to_menu")
 async def process_back_to_menu(callback: CallbackQuery):
@@ -159,20 +184,21 @@ async def process_back_to_menu(callback: CallbackQuery):
         await callback.message.answer(
             "Главное меню\n\nВыберите действие:",
             reply_markup=get_main_keyboard(),
-            parse_mode="Markdown"
+            parse_mode="Markdown",
         )
-        
+
         # Пытаемся удалить инлайн-клавиатуру из предыдущего сообщения
         try:
             await callback.message.edit_reply_markup(reply_markup=None)
         except:
             pass  # Не критично, если не получится
-        
+
     except Exception as e:
         logger.error(f"Ошибка при возврате в меню: {e}")
         await callback.answer("❌ Произошла ошибка")
     finally:
         await callback.answer()
+
 
 async def generate_interpretation(spread_type, cards, positions, is_reversed_list):
     """Генерация толкования расклада"""
@@ -186,257 +212,373 @@ async def generate_interpretation(spread_type, cards, positions, is_reversed_lis
         return await interpret_work_spread(cards, positions, is_reversed_list)
     elif spread_type == "celtic_cross":
         return await interpret_celtic_cross(cards, positions, is_reversed_list)
-    
+
     return "🔮 Толкование этого расклада пока недоступно."
+
 
 async def interpret_single_card(card, is_reversed):
     """Толкование одной карты"""
-    card_name = card.get('name', 'Неизвестная карта')
+    card_name = card.get("name", "Неизвестная карта")
     interpretation = f"📖 **Толкование карты {card_name}**\n\n"
-    
+
     if is_reversed:
         interpretation += f"🔄 **Перевернутое положение:**\n{card.get('rdesc', 'Описание отсутствует')}\n\n"
-        interpretation += f"💡 **Совет:** {card.get('radvice', 'Примите ситуацию как есть')}"
+        interpretation += (
+            f"💡 **Совет:** {card.get('radvice', 'Примите ситуацию как есть')}"
+        )
     else:
-        interpretation += f"⬆️ **Прямое положение:**\n{card.get('desc', 'Описание отсутствует')}\n\n"
-        interpretation += f"💡 **Совет:** {card.get('advice', 'Доверьтесь своей интуиции')}"
-    
+        interpretation += (
+            f"⬆️ **Прямое положение:**\n{card.get('desc', 'Описание отсутствует')}\n\n"
+        )
+        interpretation += (
+            f"💡 **Совет:** {card.get('advice', 'Доверьтесь своей интуиции')}"
+        )
+
+    return interpretation
+
+
+async def interpret_daily_spread(cards, positions, is_reversed_list):
+    """Толкование расклада на день (3 карты: утро, день, вечер)"""
+    interpretation = "🌅 **Толкование расклада на день**\n\n"
+    parts = []
+    for card, pos, rev in zip(cards, positions, is_reversed_list):
+        card_name = card.get("name", "Неизвестная карта")
+        if rev:
+            desc = card.get("rdesc", "Описание отсутствует")
+            advice = card.get("radvice", "Примите ситуацию как есть")
+            parts.append(
+                f"**{pos}** — {card_name}\n🔄 Перевернутое положение:\n{desc}\n💡 Совет: {advice}\n"
+            )
+        else:
+            desc = card.get("desc", "Описание отсутствует")
+            advice = card.get("advice", "Доверьтесь своей интуиции")
+            parts.append(
+                f"**{pos}** — {card_name}\n⬆️ Прямое положение:\n{desc}\n💡 Совет: {advice}\n"
+            )
+    interpretation += "\n".join(parts)
+    return interpretation
+
+async def interpret_love_spread(cards, positions, is_reversed_list):
+    """Толкование расклада на любовь (2 карты: вы, ваш партнер/отношения)"""
+    interpretation = "💕 **Толкование расклада на любовь**\n\n"
+    parts = []
+    for card, pos, rev in zip(cards, positions, is_reversed_list):
+        card_name = card.get("name", "Неизвестная карта")
+        if rev:
+            desc = card.get("rdesc", "Описание отсутствует")
+            advice = card.get("radvice", "Примите ситуацию как есть")
+            parts.append(
+                f"**{pos}** — {card_name}\n🔄 Перевернутое положение:\n{desc}\n💡 Совет: {advice}\n"
+            )
+        else:
+            desc = card.get("desc", "Описание отсутствует")
+            advice = card.get("advice", "Доверьтесь своей интуиции")
+            parts.append(
+                f"**{pos}** — {card_name}\n⬆️ Прямое положение:\n{desc}\n💡 Совет: {advice}\n"
+            )
+    interpretation += "\n".join(parts)
+    return interpretation
+
+async def interpret_work_spread(cards, positions, is_reversed_list):
+    """Толкование расклада на работу (3 карты: ситуация, препятствия, решение)"""
+    interpretation = "💼 **Толкование расклада на работу**\n\n"
+    parts = []
+    for card, pos, rev in zip(cards, positions, is_reversed_list):
+        card_name = card.get("name", "Неизвестная карта")
+        if rev:
+            desc = card.get("rdesc", "Описание отсутствует")
+            advice = card.get("radvice", "Примите ситуацию как есть")
+            parts.append(
+                f"**{pos}** — {card_name}\n🔄 Перевернутое положение:\n{desc}\n💡 Совет: {advice}\n"
+            )
+        else:
+            desc = card.get("desc", "Описание отсутствует")
+            advice = card.get("advice", "Доверьтесь своей интуиции")
+            parts.append(
+                f"**{pos}** — {card_name}\n⬆️ Прямое положение:\n{desc}\n💡 Совет: {advice}\n"
+            )
+    interpretation += "\n".join(parts)
+    return interpretation
+
+async def interpret_celtic_cross(cards, positions, is_reversed_list):
+    """Толкование расклада Кельтский крест (10 карт)"""
+    interpretation = "🏰 **Толкование расклада Кельтский крест**\n\n"
+    parts = []
+    for card, pos, rev in zip(cards, positions, is_reversed_list):
+        card_name = card.get("name", "Неизвестная карта")
+        if rev:
+            desc = card.get("rdesc", "Описание отсутствует")
+            advice = card.get("radvice", "Примите ситуацию как есть")
+            parts.append(
+                f"**{pos}** — {card_name}\n🔄 Перевернутое положение:\n{desc}\n💡 Совет: {advice}\n"
+            )
+        else:
+            desc = card.get("desc", "Описание отсутствует")
+            advice = card.get("advice", "Доверьтесь своей интуиции")
+            parts.append(
+                f"**{pos}** — {card_name}\n⬆️ Прямое положение:\n{desc}\n💡 Совет: {advice}\n"
+            )
+    interpretation += "\n".join(parts)
     return interpretation
 
 async def send_single_card(message: Message, question: str = None):
     try:
         progress_msg = await message.answer("🔮 Тасую карты...")
-        
+
         # Сохраняем запрос с вопросом
         request_text = "Запрос одной карты"
         if question:
             request_text += f": {question}"
         await tarot_api_instance.save_user_request(message.from_user.id, request_text)
-        
+
         card = await tarot_api_instance.get_random_card()
         if not card:
             await progress_msg.delete()
-            await message.answer("😔 Карты недоступны.", reply_markup=get_main_keyboard())
+            await message.answer(
+                "😔 Карты недоступны.", reply_markup=get_main_keyboard()
+            )
             return
-        
+
         is_reversed = random.choice([True, False])
-        
+
         # Формируем текст с вопросом, если есть
         title = "🎴 Одна карта"
         if question:
             title += f"\n💭 Вопрос: {question}"
-        
+
         text = format_card_message([card], ["Ваша карта"], [is_reversed], title)
-        
+
         image_file = generate_single_card_image(card, is_reversed)
-        
+
         await progress_msg.delete()
-        
+
         # Сохраняем расклад для возможного толкования
         user_spreads[message.from_user.id] = {
-            'type': 'single_card',
-            'cards': [card],
-            'positions': ["Ваша карта"],
-            'is_reversed_list': [is_reversed],
-            'question': question
+            "type": "single_card",
+            "cards": [card],
+            "positions": ["Ваша карта"],
+            "is_reversed_list": [is_reversed],
+            "question": question,
         }
-        
+
         if image_file:
             await message.answer_photo(
-                photo=image_file, 
-                caption=text, 
+                photo=image_file,
+                caption=text,
                 parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, 
-                parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
-            
+
     except Exception as e:
         logger.error(f"Ошибка в send_single_card: {e}", exc_info=True)
         await message.answer(
             "❌ Произошла ошибка при создании расклада",
-            reply_markup=get_back_to_menu_keyboard()
+            reply_markup=get_back_to_menu_keyboard(),
         )
+
 
 async def send_daily_spread(message: Message):
     """Расклад на день (3 карты)"""
     try:
         progress_msg = await message.answer("🌅 Создаю расклад на день...")
-        await tarot_api_instance.save_user_request(message.from_user.id, "Расклад на день")
-        
+        await tarot_api_instance.save_user_request(
+            message.from_user.id, "Расклад на день"
+        )
+
         cards = await tarot_api_instance.get_cards()
         if not cards or len(cards) < 3:
             await progress_msg.delete()
-            await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
+            await message.answer(
+                "😔 Недостаточно карт.", reply_markup=get_main_keyboard()
+            )
             return
-        
+
         selected_cards = random.sample(cards, 3)
         positions = ["Утро", "День", "Вечер"]
         is_reversed_list = [random.choice([True, False]) for _ in range(3)]
-        
-        text = format_card_message(selected_cards, positions, is_reversed_list, "🌅 Расклад на день")
-        
+
+        text = format_card_message(
+            selected_cards, positions, is_reversed_list, "🌅 Расклад на день"
+        )
+
         image_file = generate_three_card_image(selected_cards, is_reversed_list)
-        
+
         await progress_msg.delete()
-        
+
         if image_file:
             await message.answer_photo(
-                photo=image_file, 
-                caption=text, 
+                photo=image_file,
+                caption=text,
                 parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, 
-                parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
-            
+
     except Exception as e:
         logger.error(f"Ошибка в send_daily_spread: {e}", exc_info=True)
         await message.answer("❌ Произошла ошибка при создании расклада")
+
 
 async def send_love_spread(message: Message):
     """Расклад на любовь (2 карты)"""
     try:
         progress_msg = await message.answer("💕 Создаю расклад на любовь...")
-        await tarot_api_instance.save_user_request(message.from_user.id, "Расклад на любовь")
-        
+        await tarot_api_instance.save_user_request(
+            message.from_user.id, "Расклад на любовь"
+        )
+
         cards = await tarot_api_instance.get_cards()
         if not cards or len(cards) < 2:
             await progress_msg.delete()
-            await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
+            await message.answer(
+                "😔 Недостаточно карт.", reply_markup=get_main_keyboard()
+            )
             return
-        
+
         selected_cards = random.sample(cards, 2)
         positions = ["Вы", "Ваш партнер/отношения"]
         is_reversed_list = [random.choice([True, False]) for _ in range(2)]
-        
-        text = format_card_message(selected_cards, positions, is_reversed_list, "💕 Расклад на любовь")
-        
+
+        text = format_card_message(
+            selected_cards, positions, is_reversed_list, "💕 Расклад на любовь"
+        )
+
         image_file = generate_two_card_image(selected_cards, is_reversed_list)
-        
+
         await progress_msg.delete()
-        
+
         if image_file:
             await message.answer_photo(
-                photo=image_file, 
-                caption=text, 
+                photo=image_file,
+                caption=text,
                 parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, 
-                parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
-            
+
     except Exception as e:
         logger.error(f"Ошибка в send_love_spread: {e}", exc_info=True)
         await message.answer("❌ Произошла ошибка при создании расклада")
+
 
 async def send_work_spread(message: Message):
     """Расклад на работу (3 карты)"""
     try:
         progress_msg = await message.answer("💼 Создаю расклад на работу...")
-        await tarot_api_instance.save_user_request(message.from_user.id, "Расклад на работу")
-        
+        await tarot_api_instance.save_user_request(
+            message.from_user.id, "Расклад на работу"
+        )
+
         cards = await tarot_api_instance.get_cards()
         if not cards or len(cards) < 3:
             await progress_msg.delete()
-            await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
+            await message.answer(
+                "😔 Недостаточно карт.", reply_markup=get_main_keyboard()
+            )
             return
-        
+
         selected_cards = random.sample(cards, 3)
         positions = ["Текущая ситуация", "Препятствия", "Решение"]
         is_reversed_list = [random.choice([True, False]) for _ in range(3)]
-        
-        text = format_card_message(selected_cards, positions, is_reversed_list, "💼 Расклад на работу")
-        
+
+        text = format_card_message(
+            selected_cards, positions, is_reversed_list, "💼 Расклад на работу"
+        )
+
         image_file = generate_three_card_image(selected_cards, is_reversed_list)
-        
+
         await progress_msg.delete()
-        
+
         if image_file:
             await message.answer_photo(
-                photo=image_file, 
-                caption=text, 
+                photo=image_file,
+                caption=text,
                 parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, 
-                parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
-            
+
     except Exception as e:
         logger.error(f"Ошибка в send_work_spread: {e}", exc_info=True)
         await message.answer("❌ Произошла ошибка при создании расклада")
+
 
 async def send_celtic_cross_spread(message: Message):
     """Расклад Кельтский крест"""
     try:
         # Проверка лимита запросов
-        if not rate_limiter_instance.can_make_request(message.from_user.id, limit=3, period=3600):
-            await message.answer("⏳ Пожалуйста, подождите перед следующим сложным раскладом")
+        if not rate_limiter_instance.can_make_request(
+            message.from_user.id, limit=3, period=3600
+        ):
+            await message.answer(
+                "⏳ Пожалуйста, подождите перед следующим сложным раскладом"
+            )
             return
-        
+
         progress_msg = await message.answer("🔮 Создаю расклад Кельтский крест...")
-        await tarot_api_instance.save_user_request(message.from_user.id, "Расклад Кельтский крест")
-        
+        await tarot_api_instance.save_user_request(
+            message.from_user.id, "Расклад Кельтский крест"
+        )
+
         cards = await tarot_api_instance.get_cards()
         if not cards or len(cards) < 10:
             await progress_msg.delete()
-            await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
+            await message.answer(
+                "😔 Недостаточно карт.", reply_markup=get_main_keyboard()
+            )
             return
-        
+
         selected_cards = random.sample(cards, 10)
         positions = [
-            "1. Настоящая ситуация", 
-            "2. Вызов", 
-            "3. Бессознательное", 
-            "4. Прошлое", 
-            "5. Сознательное", 
+            "1. Настоящая ситуация",
+            "2. Вызов",
+            "3. Бессознательное",
+            "4. Прошлое",
+            "5. Сознательное",
             "6. Будущее",
-            "7. Ваше отношение", 
-            "8. Внешнее влияние", 
-            "9. Надежды/страхи", 
-            "10. Итог"
+            "7. Ваше отношение",
+            "8. Внешнее влияние",
+            "9. Надежды/страхи",
+            "10. Итог",
         ]
         is_reversed_list = [random.choice([True, False]) for _ in range(10)]
-        
-        text = format_card_message(selected_cards, positions, is_reversed_list, "🏰 Расклад Кельтский крест")
-        
+
+        text = format_card_message(
+            selected_cards, positions, is_reversed_list, "🏰 Расклад Кельтский крест"
+        )
+
         image_file = generate_celtic_cross_image(selected_cards, is_reversed_list)
-        
+
         await progress_msg.delete()
-        
+
         if image_file:
             await message.answer_photo(
-                photo=image_file, 
-                caption=text, 
+                photo=image_file,
+                caption=text,
                 parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, 
-                parse_mode="Markdown",
-                reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
-            
+
     except Exception as e:
         logger.error(f"Ошибка в send_celtic_cross_spread: {e}", exc_info=True)
         await message.answer(
             "❌ Произошла ошибка при создании расклада",
-            reply_markup=get_back_to_menu_keyboard()
+            reply_markup=get_back_to_menu_keyboard(),
         )
