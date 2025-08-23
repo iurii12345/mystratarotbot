@@ -138,7 +138,7 @@ async def ask_for_question(
     )
 
     await callback.message.answer(
-        message_text, reply_markup=get_question_keyboard(), parse_mode="Markdown"
+        message_text, reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
     )
 
 
@@ -171,7 +171,7 @@ async def process_interpret_spread(callback: CallbackQuery):
         spread_type, cards, positions, is_reversed_list
     )
 
-    await callback.message.answer(interpretation, parse_mode="Markdown")
+    await callback.message.answer(interpretation, parse_mode="MarkdownV2")
     await callback.answer()
 
 
@@ -183,7 +183,7 @@ async def process_back_to_menu(callback: CallbackQuery):
         await callback.message.answer(
             "Главное меню\n\nВыберите действие:",
             reply_markup=get_main_keyboard(),
-            parse_mode="Markdown",
+            parse_mode="MarkdownV2",
         )
 
         # Пытаемся удалить инлайн-клавиатуру из предыдущего сообщения
@@ -364,12 +364,12 @@ async def send_single_card(message: Message, question: str = None):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="Markdown",
+                parse_mode="MarkdownV2",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
+                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
@@ -412,12 +412,12 @@ async def send_daily_spread(message: Message):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="Markdown",
+                parse_mode="MarkdownV2",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
+                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
@@ -457,12 +457,12 @@ async def send_love_spread(message: Message):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="Markdown",
+                parse_mode="MarkdownV2",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
+                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
@@ -502,12 +502,12 @@ async def send_work_spread(message: Message):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="Markdown",
+                parse_mode="MarkdownV2",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
+                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
@@ -567,12 +567,12 @@ async def send_celtic_cross_spread(message: Message):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="Markdown",
+                parse_mode="MarkdownV2",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
+                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
