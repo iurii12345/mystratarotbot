@@ -151,14 +151,14 @@ async def ask_for_question(callback: CallbackQuery, state: FSMContext, spread_ty
     await state.set_state(SpreadStates.waiting_for_question)
 
     message_text = (
-        f"🔮 Вы выбрали *{escape_md(spread_names[spread_type])}*\n\n"
+        f"🔮 Вы выбрали *{spread_names[spread_type]}*\n\n"
         "💭 *Задайте вопрос, который вас волнует:*\n"
         "Или просто опишите ситуацию, для которой нужен расклад.\n"
-        "Чем конкретнее вопрос, тем точнее будет ответ\\!"
+        "Чем конкретнее вопрос, тем точнее будет ответ!"
     )
 
     await callback.message.answer(
-        message_text, reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
+        escape_md(message_text), reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
     )
 
 @router.callback_query(F.data.in_(SPREADS_CONFIG.keys()))
