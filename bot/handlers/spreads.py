@@ -106,7 +106,7 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
         if question:
             title += f"\n💭 *Вопрос:* {escape_md(question)}"
 
-        text = format_card_message(selected_cards, config["positions"], is_reversed_list, title)
+        text = escape_md(format_card_message(selected_cards, config["positions"], is_reversed_list, title))
         image_file = config["image_func"](selected_cards, is_reversed_list)
 
         await progress_msg.delete()
