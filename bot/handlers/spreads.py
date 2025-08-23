@@ -45,21 +45,21 @@ SPREADS_CONFIG = {
     },
     "daily_spread": {
         "cards_count": 3,
-        "positions": ["1. Утро", "2. День", "3. Вечер"],
+        "positions": ["1\\. Утро", "2\\. День", "3\\. Вечер"],
         "image_func": generate_three_card_image,
         "title": "🌅 Расклад на день",
         "request_text": "Расклад на день",
     },
     "love_spread": {
         "cards_count": 2,
-        "positions": ["1. Вы", "2. Ваш партнер/отношения"],
+        "positions": ["1\\. Вы", "2\\. Ваш партнер/отношения"],
         "image_func": generate_two_card_image,
         "title": "💕 Расклад на любовь",
         "request_text": "Расклад на любовь",
     },
     "work_spread": {
         "cards_count": 3,
-        "positions": ["1. Текущая ситуация", "2. Препятствия", "3. Решение"],
+        "positions": ["1\\. Текущая ситуация", "2\\. Препятствия", "3\\. Решение"],
         "image_func": generate_three_card_image,
         "title": "💼 Расклад на работу",
         "request_text": "Расклад на работу",
@@ -67,9 +67,9 @@ SPREADS_CONFIG = {
     "celtic_cross_spread": {
         "cards_count": 10,
         "positions": [
-            "1. Настоящая ситуация", "2. Вызов", "3. Бессознательное", "4. Прошлое",
-            "5. Сознательное", "6. Будущее", "7. Ваше отношение", "8. Внешнее влияние",
-            "9. Надежды/страхи", "10. Итог"
+            "1\\. Настоящая ситуация", "2\\. Вызов", "3\\. Бессознательное", "4\\. Прошлое",
+            "5\\. Сознательное", "6\\. Будущее", "7\\. Ваше отношение", "8\\. Внешнее влияние",
+            "9\\. Надежды/страхи", "10\\. Итог"
         ],
         "image_func": generate_celtic_cross_image,
         "title": "🏰 Расклад «Кельтский крест»",
@@ -77,14 +77,20 @@ SPREADS_CONFIG = {
     },
 }
 
+def escape_md(text: str) -> str:
+    """Экранирует спецсимволы для MarkdownV2."""
+    for ch in r"_*[]()~`>#+-=|{}.!":
+        text = text.replace(ch, f"\\{ch}")
+    return text
+
 async def send_spread(message: Message, spread_type: str, question: str = None):
     try:
         config = SPREADS_CONFIG[spread_type]
-        progress_msg = await message.answer(f"{config['title']}...")
+        progress_msg = await message.answer(escape_md(f"{config['title']}..."), parse_mode="MarkdownV2")
 
         await tarot_api_instance.save_user_request(
             message.from_user.id,
-            f"{config['request_text']}{f': {question}' if question else ''}"
+            escape_md(f"{config['request_text']}{f': {question}' if question else ''}")
         )
 
         cards = await tarot_api_instance.get_cards()
@@ -96,11 +102,11 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
         selected_cards = random.sample(cards, config["cards_count"])
         is_reversed_list = [random.choice([True, False]) for _ in range(config["cards_count"])]
 
-        title = config["title"]
+        title = escape_md(config["title"])
         if question:
-            title += f"\n💭 Вопрос: {question}"
+            title += f"\n💭 *Вопрос:* {escape_md(question)}"
 
-        text = format_card_message(selected_cards, config["positions"], is_reversed_list, title)
+        text = format_card_message(selected_cards, config["positions"], is_reversed_list, title, mdv2=True)
         image_file = config["image_func"](selected_cards, is_reversed_list)
 
         await progress_msg.delete()
@@ -117,12 +123,12 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="Markdown",
+                parse_mode="MarkdownV2",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
+                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
@@ -145,14 +151,14 @@ async def ask_for_question(callback: CallbackQuery, state: FSMContext, spread_ty
     await state.set_state(SpreadStates.waiting_for_question)
 
     message_text = (
-        f"🔮 Вы выбрали {spread_names[spread_type]}\n\n"
+        f"🔮 Вы выбрали *{escape_md(spread_names[spread_type])}*\n\n"
         "💭 *Задайте вопрос, который вас волнует:*\n"
         "Или просто опишите ситуацию, для которой нужен расклад.\n"
-        "Чем конкретнее вопрос, тем точнее будет ответ!"
+        "Чем конкретнее вопрос, тем точнее будет ответ\\!"
     )
 
     await callback.message.answer(
-        message_text, reply_markup=get_question_keyboard(), parse_mode="Markdown"
+        message_text, reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
     )
 
 @router.callback_query(F.data.in_(SPREADS_CONFIG.keys()))
@@ -211,16 +217,16 @@ async def process_interpret_spread(callback: CallbackQuery):
     except Exception:
         pass
 
-    await callback.message.answer(interpretation, parse_mode="Markdown")
+    await callback.message.answer(escape_md(interpretation), parse_mode="MarkdownV2")
     await callback.answer()
 
 @router.callback_query(F.data == "back_to_menu")
 async def process_back_to_menu(callback: CallbackQuery):
     try:
         await callback.message.answer(
-            "Главное меню\n\nВыберите действие:",
+            "*Главное меню*\n\nВыберите действие:",
             reply_markup=get_main_keyboard(),
-            parse_mode="Markdown",
+            parse_mode="MarkdownV2",
         )
         try:
             await callback.message.edit_reply_markup(reply_markup=None)
