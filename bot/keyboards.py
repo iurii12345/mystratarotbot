@@ -14,7 +14,8 @@ def get_main_keyboard() -> InlineKeyboardMarkup:
             ],
             [
                 InlineKeyboardButton(
-                    text="🏰 «Кельтский крест» (10)", callback_data="celtic_cross_spread"
+                    text="🏰 «Кельтский крест» (10)",
+                    callback_data="celtic_cross_spread",
                 )
             ],
             [InlineKeyboardButton(text="❓ Помощь", callback_data="help")],
@@ -40,10 +41,10 @@ def get_interpret_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
+                InlineKeyboardButton(text="↩️ В меню", callback_data="back_to_menu"),
                 InlineKeyboardButton(
                     text="📖 Толковать", callback_data="interpret_spread"
                 ),
-                InlineKeyboardButton(text="↩️ В меню", callback_data="back_to_menu"),
             ]
         ]
     )
