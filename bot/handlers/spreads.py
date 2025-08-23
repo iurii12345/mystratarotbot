@@ -4,7 +4,6 @@ import random
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
-
 from api_client import rate_limiter_instance, tarot_api_instance
 from handlers.states import SpreadStates  # Импортируем состояния
 from images import (
@@ -20,12 +19,13 @@ from keyboards import (
     get_question_keyboard,
 )
 from utils import format_card_message, validate_cards_count
+
 from .interpretation import (
-    interpret_single_card,
+    interpret_celtic_cross,
     interpret_daily_spread,
     interpret_love_spread,
+    interpret_single_card,
     interpret_work_spread,
-    interpret_celtic_cross,
 )
 
 router = Router()
@@ -34,7 +34,6 @@ logger = logging.getLogger(__name__)
 # Хранилище для временного сохранения раскладов
 user_spreads = {}
 user_questions = {}  # Для хранения вопросов пользователей
-
 
 
 @router.callback_query(F.data == "single_card")
@@ -196,7 +195,7 @@ async def process_back_to_menu(callback: CallbackQuery):
         # Пытаемся удалить инлайн-клавиатуру из предыдущего сообщения
         try:
             await callback.message.edit_reply_markup(reply_markup=None)
-        except:
+        except Exception:
             pass  # Не критично, если не получится
 
     except Exception as e:
