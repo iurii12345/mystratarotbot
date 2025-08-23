@@ -257,8 +257,8 @@ async def process_interpret_spread(callback: CallbackQuery):
 
     try:
         await callback.message.edit_reply_markup(reply_markup=None)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug("Не удалось убрать reply_markup: %s", e, exc_info=True)
 
     await callback.message.answer(escape_md(interpretation), parse_mode="MarkdownV2")
     await callback.answer()
@@ -274,8 +274,8 @@ async def process_back_to_menu(callback: CallbackQuery):
         )
         try:
             await callback.message.edit_reply_markup(reply_markup=None)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug("Не удалось убрать reply_markup при возврате в меню: %s", e, exc_info=True)
     except Exception as e:
         logger.error(f"Ошибка при возврате в меню: {e}")
         await callback.answer("❌ Произошла ошибка")
