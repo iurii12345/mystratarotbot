@@ -60,7 +60,7 @@ async def process_work_spread(callback: CallbackQuery):
 
 @router.callback_query(F.data == "celtic_cross_spread")
 async def process_celtic_cross_spread(callback: CallbackQuery):
-    """Обработчик расклада Кельтский крест"""
+    """Обработчик расклада «Кельтский крест»"""
     await send_celtic_cross_spread(callback.message)
     await callback.answer()
 
@@ -124,7 +124,7 @@ async def ask_for_question(
         "daily_spread": "расклад на день",
         "love_spread": "расклад на любовь",
         "work_spread": "расклад на работу",
-        "celtic_cross_spread": "Кельтский крест",
+        "celtic_cross_spread": "«Кельтский крест»",
     }
 
     await state.update_data(spread_type=spread_type)
@@ -300,8 +300,8 @@ async def interpret_work_spread(cards, positions, is_reversed_list):
     return interpretation
 
 async def interpret_celtic_cross(cards, positions, is_reversed_list):
-    """Толкование расклада Кельтский крест (10 карт)"""
-    interpretation = "🏰 **Толкование расклада Кельтский крест**\n\n"
+    """Толкование расклада «Кельтский крест» (10 карт)"""
+    interpretation = "🏰 **Толкование расклада «Кельтский крест»**\n\n"
     parts = []
     for card, pos, rev in zip(cards, positions, is_reversed_list):
         card_name = card.get("name", "Неизвестная карта")
@@ -516,7 +516,7 @@ async def send_work_spread(message: Message):
 
 
 async def send_celtic_cross_spread(message: Message):
-    """Расклад Кельтский крест"""
+    """Расклад «Кельтский крест»"""
     try:
         # Проверка лимита запросов
         if not rate_limiter_instance.can_make_request(
@@ -527,9 +527,9 @@ async def send_celtic_cross_spread(message: Message):
             )
             return
 
-        progress_msg = await message.answer("🔮 Создаю расклад Кельтский крест...")
+        progress_msg = await message.answer("🔮 Создаю расклад «Кельтский крест»...")
         await tarot_api_instance.save_user_request(
-            message.from_user.id, "Расклад Кельтский крест"
+            message.from_user.id, "Расклад «Кельтский крест»"
         )
 
         cards = await tarot_api_instance.get_cards()
@@ -556,7 +556,7 @@ async def send_celtic_cross_spread(message: Message):
         is_reversed_list = [random.choice([True, False]) for _ in range(10)]
 
         text = format_card_message(
-            selected_cards, positions, is_reversed_list, "🏰 Расклад Кельтский крест"
+            selected_cards, positions, is_reversed_list, "🏰 Расклад «Кельтский крест»"
         )
 
         image_file = generate_celtic_cross_image(selected_cards, is_reversed_list)
