@@ -5,6 +5,7 @@ from aiogram.filters import Command
 # Абсолютные импорты
 from api_client import tarot_api_instance
 from keyboards import get_main_keyboard
+from .spreads import escape_md
 
 router = Router()
 
@@ -20,12 +21,12 @@ async def start_command(message: Message):
     )
     
     welcome_text = (
-        f"Добро пожаловать, {user.first_name or 'друг'}!\n\n"
-        "Я - бот для гадания на картах Таро. "
+        f"Добро пожаловать, {escape_md(user.first_name or 'друг')}!\n\n"
+        "Я — бот для гадания на картах Таро\\. "
         "Выберите действие:"
     )
     
-    await message.answer(welcome_text, reply_markup=get_main_keyboard(), parse_mode="MarkdownV2")
+    await message.answer(escape_md(welcome_text), reply_markup=get_main_keyboard(), parse_mode="MarkdownV2")
 
 @router.message(Command("help"))
 async def help_command(message: Message):
