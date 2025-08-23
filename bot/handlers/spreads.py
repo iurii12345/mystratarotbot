@@ -31,15 +31,17 @@ from .interpretation import (
 router = Router()
 logger = logging.getLogger(__name__)
 
+
 def escape_md(text: str) -> str:
     """Экранирует спецсимволы для MarkdownV2 — применять один раз к итоговому тексту или к пользовательским переменным."""
     if not text:
         return text
     # Экранируем обратные слэши в первую очередь, чтобы избежать двойного экранирования
     text = text.replace("\\", "\\\\")
-    for ch in '_*[]()~`>#+-=|{}.!':
+    for ch in "_*[]()~`>#+-=|{}.!":
         text = text.replace(ch, f"\\{ch}")
     return text
+
 
 # Хранилище для временного сохранения раскладов и вопросов
 user_spreads = {}
@@ -77,15 +79,23 @@ SPREADS_CONFIG = {
     "celtic_cross_spread": {
         "cards_count": 10,
         "positions": [
-            "1. Настоящая ситуация", "2. Вызов", "3. Бессознательное", "4. Прошлое",
-            "5. Сознательное", "6. Будущее", "7. Ваше отношение", "8. Внешнее влияние",
-            "9. Надежды/страхи", "10. Итог"
+            "1. Настоящая ситуация",
+            "2. Вызов",
+            "3. Бессознательное",
+            "4. Прошлое",
+            "5. Сознательное",
+            "6. Будущее",
+            "7. Ваше отношение",
+            "8. Внешнее влияние",
+            "9. Надежды/страхи",
+            "10. Итог",
         ],
         "image_func": generate_celtic_cross_image,
         "title": "🏰 Расклад «Кельтский крест»",
         "request_text": "Расклад «Кельтский крест»",
     },
 }
+
 
 async def send_spread(message: Message, spread_type: str, question: str = None):
     try:
@@ -96,24 +106,30 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
 
         await tarot_api_instance.save_user_request(
             message.from_user.id,
-            f"{config['request_text']}{f': {question}' if question else ''}"
+            f"{config['request_text']}{f': {question}' if question else ''}",
         )
 
         cards = await tarot_api_instance.get_cards()
         if not cards or len(cards) < config["cards_count"]:
             await progress_msg.delete()
-            await message.answer("😔 Недостаточно карт.", reply_markup=get_main_keyboard())
+            await message.answer(
+                "😔 Недостаточно карт.", reply_markup=get_main_keyboard()
+            )
             return
 
         selected_cards = random.sample(cards, config["cards_count"])
-        is_reversed_list = [random.choice([True, False]) for _ in range(config["cards_count"])]
+        is_reversed_list = [
+            random.choice([True, False]) for _ in range(config["cards_count"])
+        ]
 
         title = config["title"]
         if question:
             title += f"\n💭 Вопрос: {question}"
 
         # format_card_message должен возвращать «сырый» текст (без экранирования)
-        text = format_card_message(selected_cards, config["positions"], is_reversed_list, title)
+        text = format_card_message(
+            selected_cards, config["positions"], is_reversed_list, title
+        )
 
         # Экранируем итоговый текст один раз перед отправкой (для MarkdownV2)
         caption = escape_md(text)
@@ -155,7 +171,10 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
             reply_markup=get_back_to_menu_keyboard(),
         )
 
-async def ask_for_question(callback: CallbackQuery, state: FSMContext, spread_type: str):
+
+async def ask_for_question(
+    callback: CallbackQuery, state: FSMContext, spread_type: str
+):
     spread_names = {
         "single_card": "одну карту",
         "daily_spread": "расклад на день",
@@ -179,6 +198,7 @@ async def ask_for_question(callback: CallbackQuery, state: FSMContext, spread_ty
         message_text, reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
     )
 
+
 @router.callback_query(F.data.in_(SPREADS_CONFIG.keys()))
 async def process_spread(callback: CallbackQuery, state: FSMContext):
     spread_type = callback.data
@@ -187,6 +207,7 @@ async def process_spread(callback: CallbackQuery, state: FSMContext):
     else:
         await send_spread(callback.message, spread_type)
     await callback.answer()
+
 
 @router.message(SpreadStates.waiting_for_question)
 async def process_user_question(message: Message, state: FSMContext):
@@ -197,6 +218,7 @@ async def process_user_question(message: Message, state: FSMContext):
     await send_spread(message, spread_type, question)
     await state.clear()
 
+
 @router.callback_query(F.data == "skip_question")
 async def process_skip_question(callback: CallbackQuery, state: FSMContext):
     data = await state.get_data()
@@ -206,11 +228,14 @@ async def process_skip_question(callback: CallbackQuery, state: FSMContext):
     await state.clear()
     await callback.answer()
 
+
 @router.callback_query(F.data == "help")
 async def process_help(callback: CallbackQuery):
     from .start import help_command
+
     await help_command(callback.message)
     await callback.answer()
+
 
 @router.callback_query(F.data == "interpret_spread")
 async def process_interpret_spread(callback: CallbackQuery):
@@ -238,6 +263,7 @@ async def process_interpret_spread(callback: CallbackQuery):
     await callback.message.answer(escape_md(interpretation), parse_mode="MarkdownV2")
     await callback.answer()
 
+
 @router.callback_query(F.data == "back_to_menu")
 async def process_back_to_menu(callback: CallbackQuery):
     try:
@@ -255,6 +281,7 @@ async def process_back_to_menu(callback: CallbackQuery):
         await callback.answer("❌ Произошла ошибка")
     finally:
         await callback.answer()
+
 
 async def generate_interpretation(spread_type, cards, positions, is_reversed_list):
     if spread_type == "single_card":
