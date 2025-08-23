@@ -176,13 +176,13 @@ async def process_interpret_spread(callback: CallbackQuery):
     interpretation = await generate_interpretation(
         spread_type, cards, positions, is_reversed_list
     )
-    
-     # Пытаемся удалить инлайн-клавиатуру из предыдущего сообщения
+
+    # Пытаемся удалить инлайн-клавиатуру из предыдущего сообщения
     try:
         await callback.message.edit_reply_markup(reply_markup=None)
     except Exception:
         pass  # Не критично, если не получится
-    
+
     await callback.message.answer(interpretation, parse_mode="Markdown")
     await callback.answer()
 
