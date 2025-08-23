@@ -31,6 +31,12 @@ from .interpretation import (
 router = Router()
 logger = logging.getLogger(__name__)
 
+def escape_md(text: str) -> str:
+    """Экранирует спецсимволы для MarkdownV2 — применять один раз к итоговому тексту."""
+    for ch in r"_*[]()~`>#+-=|{}.!":
+        text = text.replace(ch, f"\\{ch}")
+    return text
+
 # Хранилище для временного сохранения раскладов и вопросов
 user_spreads = {}
 user_questions = {}
@@ -77,12 +83,6 @@ SPREADS_CONFIG = {
     },
 }
 
-def escape_md(text: str) -> str:
-    """Экранирует спецсимволы для MarkdownV2."""
-    for ch in r"_*[]()~`>#+-=|{}.!":
-        text = text.replace(ch, f"\\{ch}")
-    return text
-
 async def send_spread(message: Message, spread_type: str, question: str = None):
     try:
         config = SPREADS_CONFIG[spread_type]
@@ -90,7 +90,7 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
 
         await tarot_api_instance.save_user_request(
             message.from_user.id,
-            escape_md(f"{config['request_text']}{f': {question}' if question else ''}")
+            f"{config['request_text']}{f': {question}' if question else ''}"
         )
 
         cards = await tarot_api_instance.get_cards()
@@ -102,11 +102,17 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
         selected_cards = random.sample(cards, config["cards_count"])
         is_reversed_list = [random.choice([True, False]) for _ in range(config["cards_count"])]
 
-        title = escape_md(config["title"])
+        title = config["title"]
         if question:
-            title += f"\n💭 *Вопрос:* {escape_md(question)}"
+            title += f"\n💭 Вопрос: {question}"
 
-        text = escape_md(format_card_message(selected_cards, config["positions"], is_reversed_list, title))
+        # Формируем текст (без экранирования внутри format_card_message)
+        text = format_card_message(selected_cards, config["positions"], is_reversed_list, title)
+
+        # Экранируем итоговый текст один раз перед отправкой
+        caption = escape_md(text)
+
+        # Для single_card передаём один словарь + один флаг, иначе список
         if spread_type == "single_card":
             image_file = config["image_func"](selected_cards[0], is_reversed_list[0])
         else:
@@ -122,16 +128,19 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
             "question": question,
         }
 
+        # Лог caption для отладки ошибок парсинга
+        logger.debug("Caption to send (escaped): %s", caption)
+
         if image_file:
             await message.answer_photo(
                 photo=image_file,
-                caption=text,
+                caption=caption,
                 parse_mode="MarkdownV2",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
+                caption, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
