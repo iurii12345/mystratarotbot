@@ -209,15 +209,15 @@ async def process_back_to_menu(callback: CallbackQuery):
 async def generate_interpretation(spread_type, cards, positions, is_reversed_list):
     """Генерация толкования расклада"""
     if spread_type == "single_card":
-        return await interpret_single_card(cards[0], is_reversed_list[0])
+        return interpret_single_card(cards[0], is_reversed_list[0])
     elif spread_type == "daily_spread":
-        return await interpret_daily_spread(cards, positions, is_reversed_list)
+        return interpret_daily_spread(cards, positions, is_reversed_list)
     elif spread_type == "love_spread":
-        return await interpret_love_spread(cards, positions, is_reversed_list)
+        return interpret_love_spread(cards, positions, is_reversed_list)
     elif spread_type == "work_spread":
-        return await interpret_work_spread(cards, positions, is_reversed_list)
+        return interpret_work_spread(cards, positions, is_reversed_list)
     elif spread_type == "celtic_cross":
-        return await interpret_celtic_cross(cards, positions, is_reversed_list)
+        return interpret_celtic_cross(cards, positions, is_reversed_list)
 
     return "🔮 Толкование этого расклада пока недоступно."
 
