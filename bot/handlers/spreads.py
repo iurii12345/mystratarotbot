@@ -5,7 +5,6 @@ from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-# Абсолютные импорты
 from api_client import rate_limiter_instance, tarot_api_instance
 from handlers.states import SpreadStates  # Импортируем состояния
 from images import (
@@ -21,6 +20,13 @@ from keyboards import (
     get_question_keyboard,
 )
 from utils import format_card_message, validate_cards_count
+from .interpretation import (
+    interpret_single_card,
+    interpret_daily_spread,
+    interpret_love_spread,
+    interpret_work_spread,
+    interpret_celtic_cross,
+)
 
 router = Router()
 logger = logging.getLogger(__name__)
@@ -28,6 +34,7 @@ logger = logging.getLogger(__name__)
 # Хранилище для временного сохранения раскладов
 user_spreads = {}
 user_questions = {}  # Для хранения вопросов пользователей
+
 
 
 @router.callback_query(F.data == "single_card")
@@ -138,7 +145,7 @@ async def ask_for_question(
     )
 
     await callback.message.answer(
-        message_text, reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
+        message_text, reply_markup=get_question_keyboard(), parse_mode="Markdown"
     )
 
 
@@ -171,7 +178,7 @@ async def process_interpret_spread(callback: CallbackQuery):
         spread_type, cards, positions, is_reversed_list
     )
 
-    await callback.message.answer(interpretation, parse_mode="MarkdownV2")
+    await callback.message.answer(interpretation, parse_mode="Markdown")
     await callback.answer()
 
 
@@ -183,7 +190,7 @@ async def process_back_to_menu(callback: CallbackQuery):
         await callback.message.answer(
             "Главное меню\n\nВыберите действие:",
             reply_markup=get_main_keyboard(),
-            parse_mode="MarkdownV2",
+            parse_mode="Markdown",
         )
 
         # Пытаемся удалить инлайн-клавиатуру из предыдущего сообщения
@@ -214,111 +221,6 @@ async def generate_interpretation(spread_type, cards, positions, is_reversed_lis
 
     return "🔮 Толкование этого расклада пока недоступно."
 
-
-async def interpret_single_card(card, is_reversed):
-    """Толкование одной карты"""
-    card_name = card.get("name", "Неизвестная карта")
-    interpretation = f"📖 **Толкование карты {card_name}**\n\n"
-
-    if is_reversed:
-        interpretation += f"🔄 **Перевернутое положение:**\n{card.get('rdesc', 'Описание отсутствует')}\n\n"
-        interpretation += (
-            f"💡 **Совет:** {card.get('radvice', 'Примите ситуацию как есть')}"
-        )
-    else:
-        interpretation += (
-            f"⬆️ **Прямое положение:**\n{card.get('desc', 'Описание отсутствует')}\n\n"
-        )
-        interpretation += (
-            f"💡 **Совет:** {card.get('advice', 'Доверьтесь своей интуиции')}"
-        )
-
-    return interpretation
-
-
-async def interpret_daily_spread(cards, positions, is_reversed_list):
-    """Толкование расклада на день (3 карты: утро, день, вечер)"""
-    interpretation = "🌅 **Толкование расклада на день**\n\n"
-    parts = []
-    for card, pos, rev in zip(cards, positions, is_reversed_list):
-        card_name = card.get("name", "Неизвестная карта")
-        if rev:
-            desc = card.get("rdesc", "Описание отсутствует")
-            advice = card.get("radvice", "Примите ситуацию как есть")
-            parts.append(
-                f"**{pos}** — {card_name}\n🔄 Перевернутое положение:\n{desc}\n💡 Совет: {advice}\n"
-            )
-        else:
-            desc = card.get("desc", "Описание отсутствует")
-            advice = card.get("advice", "Доверьтесь своей интуиции")
-            parts.append(
-                f"**{pos}** — {card_name}\n⬆️ Прямое положение:\n{desc}\n💡 Совет: {advice}\n"
-            )
-    interpretation += "\n".join(parts)
-    return interpretation
-
-async def interpret_love_spread(cards, positions, is_reversed_list):
-    """Толкование расклада на любовь (2 карты: вы, ваш партнер/отношения)"""
-    interpretation = "💕 **Толкование расклада на любовь**\n\n"
-    parts = []
-    for card, pos, rev in zip(cards, positions, is_reversed_list):
-        card_name = card.get("name", "Неизвестная карта")
-        if rev:
-            desc = card.get("rdesc", "Описание отсутствует")
-            advice = card.get("radvice", "Примите ситуацию как есть")
-            parts.append(
-                f"**{pos}** — {card_name}\n🔄 Перевернутое положение:\n{desc}\n💡 Совет: {advice}\n"
-            )
-        else:
-            desc = card.get("desc", "Описание отсутствует")
-            advice = card.get("advice", "Доверьтесь своей интуиции")
-            parts.append(
-                f"**{pos}** — {card_name}\n⬆️ Прямое положение:\n{desc}\n💡 Совет: {advice}\n"
-            )
-    interpretation += "\n".join(parts)
-    return interpretation
-
-async def interpret_work_spread(cards, positions, is_reversed_list):
-    """Толкование расклада на работу (3 карты: ситуация, препятствия, решение)"""
-    interpretation = "💼 **Толкование расклада на работу**\n\n"
-    parts = []
-    for card, pos, rev in zip(cards, positions, is_reversed_list):
-        card_name = card.get("name", "Неизвестная карта")
-        if rev:
-            desc = card.get("rdesc", "Описание отсутствует")
-            advice = card.get("radvice", "Примите ситуацию как есть")
-            parts.append(
-                f"**{pos}** — {card_name}\n🔄 Перевернутое положение:\n{desc}\n💡 Совет: {advice}\n"
-            )
-        else:
-            desc = card.get("desc", "Описание отсутствует")
-            advice = card.get("advice", "Доверьтесь своей интуиции")
-            parts.append(
-                f"**{pos}** — {card_name}\n⬆️ Прямое положение:\n{desc}\n💡 Совет: {advice}\n"
-            )
-    interpretation += "\n".join(parts)
-    return interpretation
-
-async def interpret_celtic_cross(cards, positions, is_reversed_list):
-    """Толкование расклада «Кельтский крест» (10 карт)"""
-    interpretation = "🏰 **Толкование расклада «Кельтский крест»**\n\n"
-    parts = []
-    for card, pos, rev in zip(cards, positions, is_reversed_list):
-        card_name = card.get("name", "Неизвестная карта")
-        if rev:
-            desc = card.get("rdesc", "Описание отсутствует")
-            advice = card.get("radvice", "Примите ситуацию как есть")
-            parts.append(
-                f"**{pos}** — {card_name}\n🔄 Перевернутое положение:\n{desc}\n💡 Совет: {advice}\n"
-            )
-        else:
-            desc = card.get("desc", "Описание отсутствует")
-            advice = card.get("advice", "Доверьтесь своей интуиции")
-            parts.append(
-                f"**{pos}** — {card_name}\n⬆️ Прямое положение:\n{desc}\n💡 Совет: {advice}\n"
-            )
-    interpretation += "\n".join(parts)
-    return interpretation
 
 async def send_single_card(message: Message, question: str = None):
     try:
@@ -364,12 +266,12 @@ async def send_single_card(message: Message, question: str = None):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="MarkdownV2",
+                parse_mode="Markdown",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
@@ -412,12 +314,12 @@ async def send_daily_spread(message: Message):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="MarkdownV2",
+                parse_mode="Markdown",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
@@ -457,12 +359,12 @@ async def send_love_spread(message: Message):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="MarkdownV2",
+                parse_mode="Markdown",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
@@ -502,12 +404,12 @@ async def send_work_spread(message: Message):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="MarkdownV2",
+                parse_mode="Markdown",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
@@ -567,12 +469,12 @@ async def send_celtic_cross_spread(message: Message):
             await message.answer_photo(
                 photo=image_file,
                 caption=text,
-                parse_mode="MarkdownV2",
+                parse_mode="Markdown",
                 reply_markup=get_interpret_keyboard(),
             )
         else:
             await message.answer(
-                text, parse_mode="MarkdownV2", reply_markup=get_interpret_keyboard()
+                text, parse_mode="Markdown", reply_markup=get_interpret_keyboard()
             )
 
     except Exception as e:
