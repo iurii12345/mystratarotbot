@@ -32,8 +32,12 @@ router = Router()
 logger = logging.getLogger(__name__)
 
 def escape_md(text: str) -> str:
-    """Экранирует спецсимволы для MarkdownV2 — применять один раз к итоговому тексту."""
-    for ch in r"_*[]()~`>#+-=|{}.!":
+    """Экранирует спецсимволы для MarkdownV2 — применять один раз к итоговому тексту или к пользовательским переменным."""
+    if not text:
+        return text
+    # Экранируем обратные слэши в первую очередь, чтобы избежать двойного экранирования
+    text = text.replace("\\", "\\\\")
+    for ch in '_*[]()~`>#+-=|{}.!':
         text = text.replace(ch, f"\\{ch}")
     return text
 
@@ -51,21 +55,21 @@ SPREADS_CONFIG = {
     },
     "daily_spread": {
         "cards_count": 3,
-        "positions": ["1\\. Утро", "2\\. День", "3\\. Вечер"],
+        "positions": ["1. Утро", "2. День", "3. Вечер"],
         "image_func": generate_three_card_image,
         "title": "🌅 Расклад на день",
         "request_text": "Расклад на день",
     },
     "love_spread": {
         "cards_count": 2,
-        "positions": ["1\\. Вы", "2\\. Ваш партнер/отношения"],
+        "positions": ["1. Вы", "2. Ваш партнер/отношения"],
         "image_func": generate_two_card_image,
         "title": "💕 Расклад на любовь",
         "request_text": "Расклад на любовь",
     },
     "work_spread": {
         "cards_count": 3,
-        "positions": ["1\\. Текущая ситуация", "2\\. Препятствия", "3\\. Решение"],
+        "positions": ["1. Текущая ситуация", "2. Препятствия", "3. Решение"],
         "image_func": generate_three_card_image,
         "title": "💼 Расклад на работу",
         "request_text": "Расклад на работу",
@@ -73,9 +77,9 @@ SPREADS_CONFIG = {
     "celtic_cross_spread": {
         "cards_count": 10,
         "positions": [
-            "1\\. Настоящая ситуация", "2\\. Вызов", "3\\. Бессознательное", "4\\. Прошлое",
-            "5\\. Сознательное", "6\\. Будущее", "7\\. Ваше отношение", "8\\. Внешнее влияние",
-            "9\\. Надежды/страхи", "10\\. Итог"
+            "1. Настоящая ситуация", "2. Вызов", "3. Бессознательное", "4. Прошлое",
+            "5. Сознательное", "6. Будущее", "7. Ваше отношение", "8. Внешнее влияние",
+            "9. Надежды/страхи", "10. Итог"
         ],
         "image_func": generate_celtic_cross_image,
         "title": "🏰 Расклад «Кельтский крест»",
@@ -86,7 +90,9 @@ SPREADS_CONFIG = {
 async def send_spread(message: Message, spread_type: str, question: str = None):
     try:
         config = SPREADS_CONFIG[spread_type]
-        progress_msg = await message.answer(escape_md(f"{config['title']}..."), parse_mode="MarkdownV2")
+        # progress можно не экранировать, но безопасно экранировать заголовок
+        await_message = escape_md(f"{config['title']}...")
+        progress_msg = await message.answer(await_message, parse_mode="MarkdownV2")
 
         await tarot_api_instance.save_user_request(
             message.from_user.id,
@@ -106,13 +112,13 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
         if question:
             title += f"\n💭 Вопрос: {question}"
 
-        # Формируем текст (без экранирования внутри format_card_message)
+        # format_card_message должен возвращать «сырый» текст (без экранирования)
         text = format_card_message(selected_cards, config["positions"], is_reversed_list, title)
 
-        # Экранируем итоговый текст один раз перед отправкой
+        # Экранируем итоговый текст один раз перед отправкой (для MarkdownV2)
         caption = escape_md(text)
 
-        # Для single_card передаём один словарь + один флаг, иначе список
+        # Правильно передаём аргументы в генераторы изображений
         if spread_type == "single_card":
             image_file = config["image_func"](selected_cards[0], is_reversed_list[0])
         else:
@@ -128,7 +134,6 @@ async def send_spread(message: Message, spread_type: str, question: str = None):
             "question": question,
         }
 
-        # Лог caption для отладки ошибок парсинга
         logger.debug("Caption to send (escaped): %s", caption)
 
         if image_file:
@@ -162,15 +167,16 @@ async def ask_for_question(callback: CallbackQuery, state: FSMContext, spread_ty
     await state.update_data(spread_type=spread_type)
     await state.set_state(SpreadStates.waiting_for_question)
 
+    # Экранируем только переменную (имя расклада), остальная разметка сохраняется
     message_text = (
-        f"🔮 Вы выбрали *{spread_names[spread_type]}*\n\n"
+        f"🔮 Вы выбрали *{escape_md(spread_names[spread_type])}*\n\n"
         "💭 *Задайте вопрос, который вас волнует:*\n"
         "Или просто опишите ситуацию, для которой нужен расклад.\n"
         "Чем конкретнее вопрос, тем точнее будет ответ!"
     )
 
     await callback.message.answer(
-        escape_md(message_text), reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
+        message_text, reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
     )
 
 @router.callback_query(F.data.in_(SPREADS_CONFIG.keys()))
