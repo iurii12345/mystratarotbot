@@ -62,7 +62,7 @@ def _load_card_image(card: Dict[Any, Any], is_reversed: bool, target_size: tuple
 def _draw_number(draw: ImageDraw.Draw, x: int, y: int, number: int, font: ImageFont.FreeTypeFont):
     """Рисует номер с тенью для лучшей читаемости"""
     # Тень
-    draw.text((x+2, y+2), str(number), font=font, fill=(0, 0, 0, 128))
+    # draw.text((x+2, y+2), str(number), font=font, fill=(0, 0, 0, 128))
     # Основной текст
     draw.text((x, y), str(number), font=font, fill=(255, 255, 255, 255))
 
