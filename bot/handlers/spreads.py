@@ -186,16 +186,16 @@ async def ask_for_question(
     await state.update_data(spread_type=spread_type)
     await state.set_state(SpreadStates.waiting_for_question)
 
-    # Экранируем только переменную (имя расклада), остальная разметка сохраняется
+    # Собираем полный текст, затем экранируем один раз перед отправкой
     message_text = (
-        f"🔮 Вы выбрали *{escape_md(spread_names[spread_type])}*\n\n"
+        f"🔮 Вы выбрали *{spread_names[spread_type]}*\n\n"
         "💭 *Задайте вопрос, который вас волнует:*\n"
         "Или просто опишите ситуацию, для которой нужен расклад.\n"
         "Чем конкретнее вопрос, тем точнее будет ответ!"
     )
 
     await callback.message.answer(
-        message_text, reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
+        escape_md(message_text), reply_markup=get_question_keyboard(), parse_mode="MarkdownV2"
     )
 
 
